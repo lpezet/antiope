@@ -66,8 +66,6 @@ public class YahooBaseClient extends BaseAPIClient<StaxUnmarshallerContext> impl
 	}
 	
 	@Override
-	//protected <T> Response<T> doInvoke(Request<?> pRequest, HttpResponseHandler<APIWebServiceResponse<T>> pResponseHandler, HttpResponseHandler<APIServiceException> pErrorResponseHandler, ExecutionContext pExecutionContext) throws APIClientException, APIServiceException {
-	//protected <T> Response<T> doInvoke(Request<?> pRequest, Unmarshaller<T, ?> pUnmarshaller, HttpResponseHandler<APIServiceException> pErrorResponseHandler, ExecutionContext pExecutionContext) throws APIClientException, APIServiceException {
 	protected <T> Response<T> doInvoke(Request<?> pRequest, Unmarshaller<T, StaxUnmarshallerContext> pUnmarshaller, HttpResponseHandler<APIServiceException> pErrorResponseHandler, ExecutionContext pExecutionContext) throws APIClientException, APIServiceException {
 		StaxResponseHandler<T> responseHandler = new StaxResponseHandler<T>(pUnmarshaller);
 		HttpGet oGet = new HttpGet(pRequest.getEndpoint() + pRequest.getResourcePath() + "?w=" + pRequest.getParameters().get("w") + "&u=" + pRequest.getParameters().get("u"));
