@@ -17,7 +17,6 @@ package com.github.lpezet.antiope.dao;
 import java.util.List;
 
 import com.github.lpezet.antiope.be.IAPICredentials;
-import com.github.lpezet.antiope.metrics.BaseMetrics;
 import com.github.lpezet.antiope.metrics.IMetrics;
 import com.github.lpezet.antiope.metrics.StubMetrics;
 
@@ -34,11 +33,15 @@ public class ExecutionContext {
 	private Signer mSigner;
 	
 	public ExecutionContext() {
-		this(null, false);
+		this(null, null);
 	}
 	
-	public ExecutionContext(List<RequestHandler> pRequestHandlers, boolean pProfilingEnabled) {
-		mMetrics = pProfilingEnabled ? new BaseMetrics() : new StubMetrics();
+	public ExecutionContext(List<RequestHandler> pRequestHandlers) {
+		this(pRequestHandlers, null);
+	}
+	
+	public ExecutionContext(List<RequestHandler> pRequestHandlers, IMetrics pMetrics) {
+		mMetrics = pMetrics != null ? pMetrics : new StubMetrics();
 		mRequestHandlers = pRequestHandlers;
 	}
 

@@ -21,6 +21,7 @@ import com.github.lpezet.antiope.dao.RequestHandler;
 import com.github.lpezet.antiope.dao.Response;
 import com.github.lpezet.antiope.dao.Signer;
 import com.github.lpezet.antiope.metrics.APIRequestMetrics;
+import com.github.lpezet.antiope.metrics.BaseMetrics;
 import com.github.lpezet.antiope.metrics.IMetrics;
 import com.github.lpezet.antiope.metrics.IMetricsCollector;
 import com.github.lpezet.antiope.metrics.StubMetricsCollector;
@@ -93,7 +94,7 @@ public abstract class AbstractClient {
 	
 	protected final ExecutionContext createExecutionContext(APIWebServiceRequest req) {
         //boolean isMetricsEnabled = isRequestMetricsEnabled(req) || isProfilingEnabled();
-        return new ExecutionContext(mRequestHandlers, isProfilingEnabled());
+        return new ExecutionContext(mRequestHandlers, isProfilingEnabled() ? new BaseMetrics() : null);
     }
 
     private boolean isProfilingEnabled() {

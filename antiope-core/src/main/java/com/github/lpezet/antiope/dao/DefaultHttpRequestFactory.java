@@ -40,7 +40,7 @@ public class DefaultHttpRequestFactory implements IHttpRequestFactory {
 	private static final String	DEFAULT_ENCODING	= "UTF-8";
 
 	@Override
-	public HttpRequestBase createHttpRequest(Request<?> pRequest, APIConfiguration pConfiguration, HttpEntity pPreviousEntity, HttpContext pHttpContext, ExecutionContext pExecutionContext) {
+	public HttpRequestBase createHttpRequest(Request<?> pRequest, APIConfiguration pConfiguration, HttpContext pHttpContext, ExecutionContext pExecutionContext) {
 		// Signing request is any signer.
 		if (pExecutionContext.getSigner() != null && pExecutionContext.getCredentials() != null) {
 			pExecutionContext.getMetrics().startEvent(APIRequestMetrics.RequestSigningTime);
@@ -100,14 +100,13 @@ public class DefaultHttpRequestFactory implements IHttpRequestFactory {
 			 * don't want to do this for all operations since it will cause
 			 * extra latency in the network interaction.
 			 */
-			putMethod.getParams().setParameter(
-					CoreProtocolPNames.USE_EXPECT_CONTINUE, true);
+			putMethod.getParams().setParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, true);
 
-			if (pPreviousEntity != null) {
-				putMethod.setEntity(pPreviousEntity);
-			} else if (pRequest.getContent() != null) {
-				HttpEntity entity = new RepeatableInputStreamRequestEntity(
-						pRequest);
+			//if (pPreviousEntity != null) {
+			//	putMethod.setEntity(pPreviousEntity);
+			//} else 
+			if (pRequest.getContent() != null) {
+				HttpEntity entity = new RepeatableInputStreamRequestEntity(pRequest);
 				if (pRequest.getHeaders().get(CONTENT_LENGTH) == null) {
 					entity = newBufferedHttpEntity(entity);
 				}
