@@ -17,7 +17,7 @@ public class BaseMetrics implements IMetrics {
     /* A map to store events that are being profiled. */
     private final Map<String, TimingInfo> mEventsBeingProfiled = new HashMap<String, TimingInfo>();
     /* Latency Logger */
-    private static final Logger LATENCY_LOGGER = LoggerFactory.getLogger("tsg.tripfilmsws.latency");
+    private static final Logger LATENCY_LOGGER = LoggerFactory.getLogger("api.latency");
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseMetrics.class);
     private static final Object KEY_VALUE_SEPARATOR = "=";
     private static final Object COMMA_SEPARATOR = ", ";
