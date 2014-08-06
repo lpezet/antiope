@@ -27,7 +27,7 @@ public class Response<T> {
         this.response = response;
         this.httpResponse = httpResponse;
     }
-    public T getTSGResponse() { return response; }
+    public T getAPIResponse() { return response; }
     public HttpResponse getHttpResponse() { return httpResponse; }
 
 }
