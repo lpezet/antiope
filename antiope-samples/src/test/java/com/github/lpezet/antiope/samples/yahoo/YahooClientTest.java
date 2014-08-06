@@ -4,10 +4,25 @@
 package com.github.lpezet.antiope.samples.yahoo;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpResponse;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.github.lpezet.antiope.APIServiceException;
 import com.github.lpezet.antiope.be.APIConfiguration;
 import com.github.lpezet.antiope.be.BasicAPICredentials;
 import com.github.lpezet.antiope.be.VersionInfo;
@@ -21,6 +36,74 @@ import com.github.lpezet.antiope.util.VersionInfoUtils;
  *
  */
 public class YahooClientTest {
+	
+	private Logger mLogger = LoggerFactory.getLogger(YahooClientTest.class);
+	
+	@Test
+	public void simulator() throws Exception {
+		APIConfiguration oConfig = new APIConfiguration();
+		oConfig.setProfilingEnabled(true);
+		HttpClient oMockedHttpClient = mock(HttpClient.class);
+		
+		final HttpResponse o500Response = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR, "ISE");
+		final HttpResponse o503Response = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_SERVICE_UNAVAILABLE, "Temporary overloaded.");
+		final HttpResponse o200Response = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, null);
+		StringEntity o200Entity = new StringEntity( IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("yahoo_weather_sample.rss")) );
+		o200Response.setEntity(o200Entity);
+		Answer<HttpResponse> oDefaultAnswer = new Answer<HttpResponse>() {
+			@Override
+			public HttpResponse answer(InvocationOnMock pInvocation) throws Throwable {
+				mLogger.info("######### Static OK response...");
+				return o200Response;
+			}
+		};
+		
+		ProbabilisticAnswers<HttpResponse> oAnswers = new ProbabilisticAnswers<HttpResponse>(512, oDefaultAnswer)
+				.answerWith(new Answer<HttpResponse>() {
+					@Override
+					public HttpResponse answer(InvocationOnMock pInvocation) throws Throwable {
+						mLogger.info("######### Returning 500 HTTP response.");
+						return o500Response;
+					}
+				}, 0.10)
+				.answerWith(new Answer<HttpResponse>() {
+					@Override
+					public HttpResponse answer(InvocationOnMock pInvocation) throws Throwable {
+						mLogger.info("######### Returning 503 HTTP response.");
+						return o503Response;
+					}
+				}, 0.25)
+				.answerWith(new Answer<HttpResponse>() {
+					@Override
+					public HttpResponse answer(InvocationOnMock pInvocation) throws Throwable {
+						mLogger.info("######### Simulating very long response...");
+						Thread.sleep(5000); // 5s
+						return o200Response;
+					}
+				}, 0.05);
+		when(oMockedHttpClient.execute(isA(HttpUriRequest.class))).thenAnswer(oAnswers);
+		
+		YahooBaseClient oMyClient = new YahooBaseClient(oConfig, new BasicAPICredentials("abc", "abc"), oMockedHttpClient);
+		//oMyClient.setMetricsCollector(new LogMetricsCollector());
+		
+		WeatherRequest oRequest = new WeatherRequest().withWOEID("2502265").withTemperatureUnit(TemperatureUnit.Celsius);
+		//oRequest.setMetricsCollector(new LogMetricsCollector());
+		
+		for (int i = 0; i < 512; i++) {
+			try {
+				WeatherResponse oResponse = oMyClient.getWeather(oRequest);
+				assertNotNull(oResponse);
+			} catch (APIServiceException e) {
+				Answer<HttpResponse> oCurrentAnswer = oAnswers.getCurrentAnswer();
+				//TODO: Normal if got an HTTP Error
+			}
+			// Validate behavior:
+			// 1. If 500 error --> expect....
+			// 2. If 503 error --> expect....
+			// 3. If too slow --> expect....
+			// 4. If 200 response --> expect...
+		}
+	}
 	
 	@Test
 	public void versionInfo() throws Exception {
@@ -38,7 +121,8 @@ public class YahooClientTest {
 		YahooBaseClient oMyClient = new YahooBaseClient(oConfig, new BasicAPICredentials("abc", "abc"), oHttpClient);
 		//oMyClient.setMetricsCollector(new LogMetricsCollector());
 		
-		doIt(oMyClient);
+		WeatherResponse oResponse = doIt(oMyClient);
+		printIt(oResponse);
 	}
 	
 	@Test
@@ -48,10 +132,11 @@ public class YahooClientTest {
 		HttpClient oHttpClient = new DefaultHttpClientFactory().createHttpClient(oConfig);
 		YahooAdvancedClient oMyClient = new YahooAdvancedClient(oConfig, new BasicAPICredentials("abc", "abc"), oHttpClient);
 		oMyClient.setMetricsCollector(new LogMetricsCollector());
-		doIt(oMyClient);
+		WeatherResponse oResponse = doIt(oMyClient);
+		printIt(oResponse);
 	}
 	
-	private void doIt(IYahooClient pClient) throws Exception {
+	private WeatherResponse doIt(IYahooClient pClient) throws Exception {
 		
 		WeatherRequest oRequest = new WeatherRequest().withWOEID("2502265").withTemperatureUnit(TemperatureUnit.Celsius);
 		//oRequest.setMetricsCollector(new LogMetricsCollector());
@@ -60,6 +145,19 @@ public class YahooClientTest {
 		assertNotNull(oResponse);
 		Weather oActual = oResponse.getResult();
 		assertNotNull(oActual);
+		assertNotNull(oActual.getLocation());
+		assertNotNull(oActual.getLocation().getCity());
+		assertNotNull(oActual.getLocation().getRegion());
+		assertNotNull(oActual.getLocation().getCountry());
+		assertNotNull(oActual.getAstronomy());
+		assertNotNull(oActual.getAstronomy().getSunrise());
+		assertNotNull(oActual.getAstronomy().getSunset());
+		
+		return oResponse;
+	}
+	
+	private void printIt(WeatherResponse pResponse) {
+		Weather oActual = pResponse.getResult();
 		System.out.println(String.format(
 				"City: %s, Region: %s, Country: %s\nWind chill: %s, direction: %s, speed: %s\n" +
 				"Today: %s, Temperature: %s, %s\n" +
@@ -77,13 +175,5 @@ public class YahooClientTest {
 					f.getDay(), f.getLow() + oActual.getUnits().getTemperature(), f.getHigh() + oActual.getUnits().getTemperature(), f.getText()
 					));
 		}
-		
-		assertNotNull(oActual.getLocation());
-		assertNotNull(oActual.getLocation().getCity());
-		assertNotNull(oActual.getLocation().getRegion());
-		assertNotNull(oActual.getLocation().getCountry());
-		assertNotNull(oActual.getAstronomy());
-		assertNotNull(oActual.getAstronomy().getSunrise());
-		assertNotNull(oActual.getAstronomy().getSunset());
 	}
 }
