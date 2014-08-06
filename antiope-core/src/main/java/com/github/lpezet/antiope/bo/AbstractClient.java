@@ -116,7 +116,9 @@ public abstract class AbstractClient {
 	
 	protected final ExecutionContext createExecutionContext(APIWebServiceRequest req) {
         //boolean isMetricsEnabled = isRequestMetricsEnabled(req) || isProfilingEnabled();
-        return new ExecutionContext(mRequestHandlers, isProfilingEnabled() ? new BaseMetrics() : null);
+        ExecutionContext oResult = new ExecutionContext(mRequestHandlers, isProfilingEnabled() ? new BaseMetrics() : null);
+        oResult.setSigner(getSigner());
+        return oResult;
     }
 
     private boolean isProfilingEnabled() {
@@ -192,6 +194,14 @@ public abstract class AbstractClient {
 	}
 	public void setCredentialsProvider(IAPICredentialsProvider pCredentialsProvider) {
 		mCredentialsProvider = pCredentialsProvider;
+	}
+
+	public Signer getSigner() {
+		return mSigner;
+	}
+
+	public void setSigner(Signer pSigner) {
+		mSigner = pSigner;
 	}
 	
 }
