@@ -53,7 +53,7 @@ public class YahooAdvancedClient extends AdvancedAPIClient<StaxUnmarshallerConte
 				oMetrics.endEvent(APIRequestMetrics.RequestMarshallTime);
 			}
 			response = invoke(request, new WeatherResponseUnmarshaller(), oContext);
-			return response.getTSGResponse();
+			return response.getAPIResponse();
 		} catch (Exception e) {
 			throw new APIClientException(e);
 		} finally {

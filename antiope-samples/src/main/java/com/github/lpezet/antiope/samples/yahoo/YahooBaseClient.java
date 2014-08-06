@@ -6,6 +6,7 @@ package com.github.lpezet.antiope.samples.yahoo;
 import java.io.IOException;
 
 import org.apache.http.Header;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -56,7 +57,9 @@ public class YahooBaseClient extends BaseAPIClient<StaxUnmarshallerContext> impl
 				oMetrics.endEvent(APIRequestMetrics.RequestMarshallTime);
 			}
 			response = invoke(request, new WeatherResponseUnmarshaller(), oContext);
-			return response.getTSGResponse();
+			return response.getAPIResponse();
+		} catch (APIServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new APIClientException(e);
 		} finally {
@@ -75,11 +78,21 @@ public class YahooBaseClient extends BaseAPIClient<StaxUnmarshallerContext> impl
 			pRequest.getMetrics().startEvent(APIRequestMetrics.ResponseProcessingTime);
 			T oResult = null;
 			try {
-				oResult = responseHandler.handle(oResponse).getResult();
+				if (oResponse.getStatusCode() == 200) {
+					oResult = responseHandler.handle(oResponse).getResult();
+				} else if (oResponse.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+					APIServiceException oASE = new APIServiceException("Too busy.");
+					throw oASE;
+				} else if (oResponse.getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+					APIServiceException oASE = new APIServiceException("Oops! Something went wrong.");
+					throw oASE;
+				}
 			} finally {
 				pRequest.getMetrics().endEvent(APIRequestMetrics.ResponseProcessingTime);
 			}
 			return new Response<T>(oResult, oResponse);
+		} catch (APIServiceException e) {
+			throw e;
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 			throw new APIClientException(e);
