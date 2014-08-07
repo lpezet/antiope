@@ -94,11 +94,11 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 		mHttpRequestFactory = pHttpRequestFactory;
 	}
 
-	protected abstract <T> HttpResponseHandler<APIWebServiceResponse<T>> createResponseHandler(Unmarshaller<T, R> pUnmarshaller);
+	protected abstract <T> HttpResponseHandler<APIWebServiceResponse<T>> createResponseHandler(ExecutionContext pContext, Unmarshaller<T, R> pUnmarshaller);
 
 	@Override
 	protected <T> Response<T> doInvoke(Request<?> pRequest, Unmarshaller<T, R> pUnmarshaller, HttpResponseHandler<APIServiceException> pErrorResponseHandler, ExecutionContext pExecutionContext) throws APIClientException, APIServiceException {
-		HttpResponseHandler<APIWebServiceResponse<T>> oResponseHandler = createResponseHandler(pUnmarshaller);
+		HttpResponseHandler<APIWebServiceResponse<T>> oResponseHandler = createResponseHandler(pExecutionContext, pUnmarshaller);
 
 		// boolean leaveHttpConnectionOpen = false;
 
