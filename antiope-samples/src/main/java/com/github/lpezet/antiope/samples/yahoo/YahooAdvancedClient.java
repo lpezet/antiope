@@ -34,7 +34,7 @@ public class YahooAdvancedClient extends AdvancedAPIClient<StaxUnmarshallerConte
 	}
 	
 	@Override
-	protected <T> HttpResponseHandler<APIWebServiceResponse<T>> createResponseHandler(Unmarshaller<T, StaxUnmarshallerContext> pUnmarshaller) {
+	protected <T> HttpResponseHandler<APIWebServiceResponse<T>> createResponseHandler(ExecutionContext pExecutionContext, Unmarshaller<T, StaxUnmarshallerContext> pUnmarshaller) {
 		return new StaxResponseHandler<T>(pUnmarshaller);
 	}
 	
