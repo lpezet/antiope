@@ -33,6 +33,7 @@
 						<year>${project.inceptionYear}</year>
 						<email>lpezet@gmail.com</email>
 					</properties>
+					<skipExistingHeaders>true</skipExistingHeaders>
 					<includes>
 						<include>src/**</include>
 					</includes>
@@ -42,6 +43,8 @@
 						<exclude>src/main/resources/**</exclude>
 					</excludes>
 				</configuration>
+				<!--
+				Until issue https://github.com/mycila/license-maven-plugin/issues/44 is fixed. 
 				<executions>
 					<execution>
 						<goals>
@@ -49,7 +52,30 @@
 						</goals>
 					</execution>
 				</executions>
+				-->
 			</plugin>
+			<!-- 
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>license-maven-plugin</artifactId>
+		        <version>1.7</version>
+		        <configuration>
+		        	<licenseName>mit</licenseName>
+		        	<inceptionYear>${project.inceptionYear}</inceptionYear>
+		        	<organizationName>Luc Pezet</organizationName>
+		        	<projectName>Antiope</projectName>
+		        	<ignoreTag>// %%Ignore-License</ignoreTag>
+		        </configuration>
+		        <executions>
+		          <execution>
+		            <id>check-file-header</id>
+		            <goals>
+		              <goal>check-file-header</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
+		      -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>ianal-maven-plugin</artifactId>
