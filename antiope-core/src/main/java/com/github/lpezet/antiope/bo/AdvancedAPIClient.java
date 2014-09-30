@@ -28,6 +28,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -97,8 +98,6 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 	protected <T> Response<T> doInvoke(Request<?> pRequest, Unmarshaller<T, R> pUnmarshaller, HttpResponseHandler<APIServiceException> pErrorResponseHandler, ExecutionContext pExecutionContext) throws APIClientException, APIServiceException {
 		HttpResponseHandler<APIWebServiceResponse<T>> oResponseHandler = createResponseHandler(pExecutionContext, pUnmarshaller);
 
-		// boolean leaveHttpConnectionOpen = false;
-
 		IMetrics oMetrics = pExecutionContext.getMetrics();
 		// Add service metrics.
 		oMetrics.addProperty(APIRequestMetrics.ServiceName, pRequest.getServiceName());
@@ -106,8 +105,6 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 
 		// Apply whatever request options we know how to handle, such as user-agent.
 		setUserAgent(pRequest);
-
-		//HttpEntity oEntity = null;
 
 		HttpRequestBase oHttpRequest = null;
 		org.apache.http.HttpResponse oApacheResponse = null;
@@ -118,11 +115,7 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 			HttpContext oHttpContext = HttpClientContext.create();
 			// NB: Signing should happen in createHttpRequest().
 			oHttpRequest = mHttpRequestFactory.createHttpRequest(pRequest, getAPIConfiguration(), oHttpContext, pExecutionContext);
-			/*
-			if (oHttpRequest instanceof HttpEntityEnclosingRequest) {
-				oEntity = ((HttpEntityEnclosingRequest) oHttpRequest).getEntity();
-			}
-			*/
+			
 			oMetrics.startEvent(APIRequestMetrics.HttpRequestTime);
 			try {
 				oApacheResponse = mHttpClient.execute(oHttpRequest, oHttpContext);
@@ -168,18 +161,23 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 			 * connection left open, we go ahead and release the it to free
 			 * up resources.
 			 */
-			/*
-			 * if (!leaveHttpConnectionOpen) {
-			 * try {
-			 * if (oApacheResponse != null && oApacheResponse.getEntity() != null
-			 * && oApacheResponse.getEntity().getContent() != null) {
-			 * oApacheResponse.getEntity().getContent().close();
-			 * }
-			 * } catch (IOException e) {
-			 * mLogger.warn("Cannot close the response content.", e);
-			 * }
-			 * }
-			 */
+			 if (oResponseHandler != null && !oResponseHandler.needsConnectionLeftOpen()) {
+				 try {
+					 if (oApacheResponse != null) {
+						 if (oApacheResponse.getEntity() != null
+							 && oApacheResponse.getEntity().getContent() != null) {
+						 oApacheResponse.getEntity().getContent().close();
+						 }
+						 
+						 if (oApacheResponse instanceof CloseableHttpResponse) {
+							 CloseableHttpResponse oCloseable = (CloseableHttpResponse) oApacheResponse;
+							 oCloseable.close();
+						 }
+					 }
+				 } catch (IOException e) {
+				 mLogger.warn("Cannot close the response content.", e);
+				 }
+			 }
 		}
 
 	}
