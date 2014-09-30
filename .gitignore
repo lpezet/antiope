@@ -5,3 +5,8 @@
 .externalToolBuilders
 target
 bak
+.mylyn
+.plugins
+.lock
+.log
+version.ini
