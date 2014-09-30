@@ -159,10 +159,13 @@ public abstract class AbstractClient {
      */
     protected final IMetricsCollector findRequestMetricCollector(Request<?> req) {
         APIWebServiceRequest origReq = req.getOriginalRequest();
-        IMetricsCollector mc = origReq.getMetricsCollector();
-        if (mc != null) {
-            return mc;
-        }
+        IMetricsCollector mc = null;
+        if (origReq != null) {
+	        mc = origReq.getMetricsCollector();
+	        if (mc != null) {
+	            return mc;
+	        }
+	    }
         mc = getMetricsCollector();
         return mc == null ? StubMetricsCollector.getInstance() : mc;
     }

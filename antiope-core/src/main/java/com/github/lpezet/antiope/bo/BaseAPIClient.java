@@ -67,12 +67,13 @@ public abstract class BaseAPIClient<R> extends AbstractClient {
 			request.setEndpoint(getEndpoint());
 			logger.debug("Endpoint = " + getEndpoint());
 			APIWebServiceRequest originalRequest = request.getOriginalRequest();
-			for (Entry<String, String> entry : originalRequest.copyPrivateRequestParameters().entrySet()) {
-				request.addParameter(entry.getKey(), entry.getValue());
+			if (originalRequest != null) {
+				for (Entry<String, String> entry : originalRequest.copyPrivateRequestParameters().entrySet()) {
+					request.addParameter(entry.getKey(), entry.getValue());
+				}
 			}
-
 			IAPICredentials credentials = getCredentialsProvider().getCredentials();
-			if (originalRequest.getCredentials() != null) {
+			if (originalRequest != null && originalRequest.getCredentials() != null) {
 				credentials = originalRequest.getCredentials();
 			}
 
