@@ -23,9 +23,14 @@
 package com.github.lpezet.antiope.dao;
 
 import java.nio.charset.CodingErrorAction;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpHost;
@@ -63,6 +68,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.impl.io.DefaultHttpRequestWriterFactory;
 
+import com.github.lpezet.antiope.APIClientException;
 import com.github.lpezet.antiope.be.APIConfiguration;
 
 /**
@@ -70,6 +76,7 @@ import com.github.lpezet.antiope.be.APIConfiguration;
  */
 public class DefaultHttpClientFactory implements IHttpClientFactory {
 
+	private static final String SSL = "SSL";
 	private static final String HTTPS = "https";
 	private static final String HTTP = "http";
 
@@ -82,17 +89,45 @@ public class DefaultHttpClientFactory implements IHttpClientFactory {
 		// parser / writer routines to be employed by individual connections.
 		HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> oConnFactory = new ManagedHttpClientConnectionFactory(new DefaultHttpRequestWriterFactory(), new DefaultHttpResponseParserFactory());
 
-		// SSL context for secure connections can be created either based on
-		// system or application specific properties.
-		SSLContext oSslcontext = SSLContexts.createSystemDefault();
-		// Use custom hostname verifier to customize SSL hostname verification.
-		X509HostnameVerifier oHostnameVerifier = pConfiguration.isCheckSSLCertificates() ? new BrowserCompatHostnameVerifier() : new AllowAllHostnameVerifier();
-
+		SSLContext oSslContext = null;
+		X509HostnameVerifier oHostnameVerifier = null;
+		if (pConfiguration.isCheckSSLCertificates()) {
+			oSslContext = SSLContexts.createSystemDefault();
+			oHostnameVerifier = new BrowserCompatHostnameVerifier();
+		} else {
+			final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+		        @Override
+		        public void checkClientTrusted( final X509Certificate[] chain, final String authType ) {
+		        }
+		        @Override
+		        public void checkServerTrusted( final X509Certificate[] chain, final String authType ) {
+		        }
+		        @Override
+		        public X509Certificate[] getAcceptedIssuers() {
+		            return null;
+		        }
+		    } };
+		    
+		    // Install the all-trusting trust manager
+			try {
+			    final SSLContext sslContext = SSLContext.getInstance( SSL );
+			    sslContext.init( null, trustAllCerts, new java.security.SecureRandom() ); 
+			    // Create an ssl socket factory with our all-trusting manager
+			    //final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+			    oSslContext = sslContext;
+			} catch (NoSuchAlgorithmException e) {
+				throw new APIClientException(e);
+			} catch (KeyManagementException e) {
+				throw new APIClientException(e);
+			}
+		    oHostnameVerifier = new AllowAllHostnameVerifier();
+		}
+		
 		// Create a registry of custom connection socket factories for supported
 		// protocol schemes.
 		Registry<ConnectionSocketFactory> oSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register(HTTP, PlainConnectionSocketFactory.INSTANCE)
-				.register(HTTPS, new SSLConnectionSocketFactory(oSslcontext, oHostnameVerifier))
+				.register(HTTPS, new SSLConnectionSocketFactory(oSslContext, oHostnameVerifier))
 				.build();
 
 		// Use custom DNS resolver to override the system DNS resolution.
