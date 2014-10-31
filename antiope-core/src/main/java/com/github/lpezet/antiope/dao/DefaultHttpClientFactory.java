@@ -186,7 +186,7 @@ public class DefaultHttpClientFactory implements IHttpClientFactory {
 		// Create global request configuration
 		RequestConfig oDefaultRequestConfig = RequestConfig.custom()
 				.setCookieSpec(CookieSpecs.BEST_MATCH)
-				.setExpectContinueEnabled(true)
+				//.setExpectContinueEnabled(true)			// WARNING: setting it to true slows things down by 4s!!!!
 				.setStaleConnectionCheckEnabled(true)
 				.setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST))
 				.setProxyPreferredAuthSchemes(Arrays.asList(AuthSchemes.BASIC))
