@@ -16,7 +16,7 @@ package com.github.lpezet.antiope.metrics;
 
 
 /**
- * @author luc
+ * 
  */
 // NotThreadSafe
 public enum APIRequestMetrics implements RequestMetricType {
@@ -25,14 +25,14 @@ public enum APIRequestMetrics implements RequestMetricType {
 	BytesProcessed,
 	/**
 	 * Total number of milliseconds taken for a request/response including
-	 * the time taken to execute the request handlers, round trip to TSG,
+	 * the time taken to execute the request handlers, round trip to API,
 	 * and the time taken to execute the response handlers.
 	 */
 	ClientExecuteTime,
 	CredentialsRequestTime,
 	Exception,
 	/**
-	 * Number of milliseconds taken for a request/response round trip to TSG.
+	 * Number of milliseconds taken for a request/response round trip to API.
 	 */
 	HttpRequestTime,
 	RedirectLocation,
@@ -42,29 +42,29 @@ public enum APIRequestMetrics implements RequestMetricType {
 	 */
 	RequestSigningTime,
 	/**
-	 * Number of milliseconds taken to execute the response handler for a response from AWS.
+	 * Number of milliseconds taken to execute the response handler for a response from API.
 	 */
 	ResponseProcessingTime,
 	/**
-	 * Number of requests to AWS.
+	 * Number of requests to API.
 	 */
 	RequestCount,
 	/**
-	 * Number of retries of TSG SDK sending a request to TSG.
+	 * Number of retries of API SDK sending a request to API.
 	 */
 	RetryCount, // captured via the RequestCount since (RetryCount = RequestCount - 1)
 	/**
 	 * Number of retries of the underlying http client library in sending a
-	 * request to TSG.
+	 * request to API.
 	 */
 	HttpClientRetryCount,
 	/**
-	 * Time taken to send a request to AWS by the http client library,
+	 * Time taken to send a request to API by the http client library,
 	 * excluding any retry.
 	 */
 	HttpClientSendRequestTime,
 	/**
-	 * Time taken to receive a response from TSG by the http client library,
+	 * Time taken to receive a response from API by the http client library,
 	 * excluding any retry.
 	 */
 	HttpClientReceiveResponseTime,
