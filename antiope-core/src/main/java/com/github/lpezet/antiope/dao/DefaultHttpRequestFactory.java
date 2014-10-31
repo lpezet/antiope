@@ -84,7 +84,7 @@ public class DefaultHttpRequestFactory implements IHttpRequestFactory {
 		 * payload, we put the encoded params directly in the URI, otherwise,
 		 * we'll put them in the POST request's payload.
 		 */
-		boolean oRequestHasNoPayload = pRequest.getContent() != null;
+		boolean oRequestHasNoPayload = pRequest.getContent() == null;
 		boolean oRequestIsPost = pRequest.getHttpMethod() == HttpMethodName.POST;
 		boolean oPutParamsInUri = !oRequestIsPost || oRequestHasNoPayload;
 		if (oEncodedParams != null && oPutParamsInUri) {
@@ -110,8 +110,7 @@ public class DefaultHttpRequestFactory implements IHttpRequestFactory {
 			oHttpRequest = oPostMethod;
 		} else if (pRequest.getHttpMethod() == HttpMethodName.PUT) {
 			HttpPut putMethod = new HttpPut(oUri);
-			oHttpRequest = putMethod;
-
+			
 			/*
 			 * Enable 100-continue support for PUT operations, since this is
 			 * where we're potentially uploading large amounts of data and want
@@ -131,6 +130,8 @@ public class DefaultHttpRequestFactory implements IHttpRequestFactory {
 				}
 				putMethod.setEntity( entity );
 			}
+			
+			oHttpRequest = putMethod;
 		} else if (pRequest.getHttpMethod() == HttpMethodName.GET) {
 			oHttpRequest = new HttpGet(oUri);
 		} else if (pRequest.getHttpMethod() == HttpMethodName.DELETE) {
