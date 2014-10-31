@@ -57,6 +57,7 @@ public class LogMetricsCollector implements IMetricsCollector {
 		latencyMetricOf(APIRequestMetrics.ResponseProcessingTime, pRequest, pResponse, false);
 		latencyMetricOf(APIRequestMetrics.RequestSigningTime, pRequest, pResponse, false);
 		latencyMetricOf(APIRequestMetrics.RequestMarshallTime, pRequest, pResponse, false);
+		latencyMetricOf(APIRequestMetrics.HttpRequestTime, pRequest, pResponse, false);
 	}
 	
 	/**
