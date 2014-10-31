@@ -65,7 +65,7 @@ public abstract class BaseAPIClient<R> extends AbstractClient {
 
 	protected <X, Y extends APIWebServiceRequest> Response<X> invoke(Request<Y> request, Unmarshaller<X, R> unmarshaller, ExecutionContext executionContext) {
 			request.setEndpoint(getEndpoint());
-			logger.debug("Endpoint = " + getEndpoint());
+			//logger.debug("Endpoint = " + getEndpoint());
 			APIWebServiceRequest originalRequest = request.getOriginalRequest();
 			if (originalRequest != null) {
 				for (Entry<String, String> entry : originalRequest.copyPrivateRequestParameters().entrySet()) {
