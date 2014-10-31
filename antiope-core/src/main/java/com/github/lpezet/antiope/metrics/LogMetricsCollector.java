@@ -37,11 +37,20 @@ import com.github.lpezet.antiope.dao.Response;
 public class LogMetricsCollector implements IMetricsCollector {
 	
 	private boolean mEnabled;
-	private Logger mLogger = LoggerFactory.getLogger(LogMetricsCollector.class);
+	private Logger mLogger;
 	
 	public LogMetricsCollector() {
+		mLogger = LoggerFactory.getLogger(LogMetricsCollector.class);
 	}
-
+	
+	public LogMetricsCollector(String pLogName) {
+		mLogger = LoggerFactory.getLogger(pLogName);
+	}
+	
+	public LogMetricsCollector(Class<?> pLogClass) {
+		mLogger = LoggerFactory.getLogger(pLogClass);
+	}
+	
 	@Override
 	public void collectMetrics(Request<?> pRequest, Response<?> pResponse) {
 		latencyOfClientExecuteTime(pRequest, pResponse);
