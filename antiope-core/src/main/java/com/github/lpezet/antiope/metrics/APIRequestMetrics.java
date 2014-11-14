@@ -72,5 +72,25 @@ public enum APIRequestMetrics implements RequestMetricType {
 	ServiceEndpoint,
 	ServiceName,
 	StatusCode, // The http status code
+	/**
+	 * The number of idle persistent connections.
+	 * Reference: https://hc.apache .org/httpcomponents-core-ga/httpcore/apidocs/org/apache /http/pool/PoolStats.html
+	 */
+	HttpClientPoolAvailableCount,
+	/**
+	 * The number of persistent connections tracked by the connection manager currently being used to execute requests.
+	 * Reference: https://hc .apache.org/httpcomponents-core-ga/httpcore/apidocs/org/apache /http/pool/PoolStats.html
+	 */
+	HttpClientPoolLeasedCount,
+	/**
+	 * The number of connection requests being blocked awaiting a free connection.
+	 * Reference: https://hc.apache.org/httpcomponents-core-ga/httpcore /apidocs/org/apache/http/pool/PoolStats.html
+	 */
+	HttpClientPoolPendingCount,
+	
+	/**
+	 * Used to count and preserve the throttle related exceptions.
+	 */
+	ThrottleException,
 	;
 }
