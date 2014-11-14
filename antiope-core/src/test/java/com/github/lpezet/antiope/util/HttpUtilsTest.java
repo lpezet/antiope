@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.junit.Test;
 

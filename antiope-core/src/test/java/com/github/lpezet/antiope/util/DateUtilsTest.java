@@ -6,9 +6,6 @@ package com.github.lpezet.antiope.util;
 import static org.junit.Assert.assertNotNull;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
