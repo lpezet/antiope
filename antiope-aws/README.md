@@ -54,10 +54,7 @@ IMetricsCollector oMetricsCollector = new DefaultMetricsCollectorFactory(oConfig
 oClient.setMetricsCollector(oMetricsCollector);
 ```
 
-Also make sure to turn on profiling, or metrics won't get collected at all.
-```java
-	
-```
+For more information about API Client instrumentation and metric collection, check out this [blog post](TODO).
 
 Installation
 ------------
