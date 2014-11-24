@@ -36,7 +36,7 @@ public class DefaultMetricsCollectorFactory implements ThreadedMetricsCollector.
     	Regions region = mConfig.getMetricsConfig().getRegion();
         Integer oQSize = mConfig.getCloudWatchConfig().getMetricQueueSize();
         Long oTimeoutMilli = mConfig.getCloudWatchConfig().getQueuePollTimeoutMilli();
-        CloudWatchConfig oCloudWatchConfig = new CloudWatchConfig();
+        CloudWatchConfig oCloudWatchConfig = new CloudWatchConfig(mConfig.getCloudWatchConfig());
         if (mConfig.getCloudWatchConfig().getCredentialsProvider() != null)
             oCloudWatchConfig.setCredentialsProvider(mConfig.getCloudWatchConfig().getCredentialsProvider());
         if (region != null) {
