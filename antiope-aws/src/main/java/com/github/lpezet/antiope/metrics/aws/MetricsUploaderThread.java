@@ -54,8 +54,8 @@ class MetricsUploaderThread extends Thread {
         mCloudwatchClient = pClient;
         mQIterator = new BlockingRequestBuilder(pConfig, pQueue);
         String oEndpoint = pConfig.getCloudWatchConfig().getCloudWatchEndPoint(); 
-        if (oEndpoint != null)
-            mCloudwatchClient.setEndpoint(oEndpoint);
+        if (oEndpoint != null) 
+        	mCloudwatchClient.setEndpoint(oEndpoint);
         this.setPriority(MIN_PRIORITY);
         setDaemon(true);
     }
