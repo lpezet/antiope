@@ -92,7 +92,18 @@ public class CloudWatchConfig {
     
     private int mMetricQueueSize = DEFAULT_METRICS_QSIZE;
 
-    /**
+    public CloudWatchConfig() {
+    	
+    }
+    
+    public CloudWatchConfig(CloudWatchConfig pSource) {
+		withCloudWatchEndPoint(pSource.getCloudWatchEndPoint())
+		.withCredentialsProvider(pSource.getCredentialsProvider())
+		.withMetricQueueSize(pSource.getMetricQueueSize())
+		.withQueuePollTimeoutMilli(pSource.getQueuePollTimeoutMilli());
+	}
+
+	/**
      * Returns the credential provider that holds the credentials to connect to
      * Amazon CloudWatch.
      */
