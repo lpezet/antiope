@@ -97,8 +97,8 @@ public class MetricsCollectorSupport extends ThreadedMetricsCollector {
         }
         mConfig = pConfig;
         mQueue = new LinkedBlockingQueue<MetricDatum>(pConfig.getCloudWatchConfig().getMetricQueueSize());
-        mRequestMetricsCollector = new RequestMetricsCollectorSupport(mQueue);
-        mServiceMetricsCollector = new ServiceMetricsCollectorSupport(mQueue);
+        mRequestMetricsCollector = new RequestMetricsCollectorSupport(pConfig, mQueue);
+        mServiceMetricsCollector = new ServiceMetricsCollectorSupport(pConfig, mQueue);
     }
 
     @Override

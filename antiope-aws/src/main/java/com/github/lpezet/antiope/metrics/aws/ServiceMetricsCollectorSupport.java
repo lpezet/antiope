@@ -47,7 +47,7 @@ public class ServiceMetricsCollectorSupport extends ServiceMetricCollector {
     protected final static Log log = LogFactory.getLog(ServiceMetricsCollectorSupport.class);
     private final BlockingQueue<MetricDatum> mQueue;
 
-    protected ServiceMetricsCollectorSupport(BlockingQueue<MetricDatum> pQueue) {
+    protected ServiceMetricsCollectorSupport(Config pConfig, BlockingQueue<MetricDatum> pQueue) {
         this.mQueue = pQueue;
     }
 

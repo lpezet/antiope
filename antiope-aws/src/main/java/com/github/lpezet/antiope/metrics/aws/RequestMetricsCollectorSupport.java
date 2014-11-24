@@ -14,7 +14,6 @@
  */
 package com.github.lpezet.antiope.metrics.aws;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
@@ -42,8 +41,9 @@ public class RequestMetricsCollectorSupport implements IMetricsCollector {
     protected final static Logger mLogger = LoggerFactory.getLogger(RequestMetricsCollectorSupport.class);
     private final BlockingQueue<MetricDatum> mQueue;
     private final PredefinedMetricTransformer mTransformer = new PredefinedMetricTransformer();
-    private static final Set<MetricType> PREDIFIED_METRICS = new HashSet<MetricType>();
+    private final Set<MetricType> mPredefinedMetrics;
     
+    /*
     static {
     	PREDIFIED_METRICS.add(APIRequestMetrics.ClientExecuteTime);
     	PREDIFIED_METRICS.add(APIRequestMetrics.Exception);
@@ -59,9 +59,11 @@ public class RequestMetricsCollectorSupport implements IMetricsCollector {
     	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientPoolPendingCount);
     	//TODO: AWSServiceMetrics.HttpClientGetConnectionTime
     }
+    */
     
-    protected RequestMetricsCollectorSupport(BlockingQueue<MetricDatum> pQueue) {
+    protected RequestMetricsCollectorSupport(Config pConfig, BlockingQueue<MetricDatum> pQueue) {
         this.mQueue = pQueue;
+        mPredefinedMetrics = pConfig.getMetricsConfig().getPredefinedMetrics();
     }
 
     /**
@@ -91,7 +93,7 @@ public class RequestMetricsCollectorSupport implements IMetricsCollector {
         if (oArm == null) { // || !arm.isEnabled()) {
             return;
         }
-        for (MetricType oType: PREDIFIED_METRICS) {
+        for (MetricType oType: mPredefinedMetrics) {
             if (!(oType instanceof APIRequestMetrics))
                 continue;
             //if (mLogger.isDebugEnabled()) mLogger.debug("Collecting metric: " + oType);
