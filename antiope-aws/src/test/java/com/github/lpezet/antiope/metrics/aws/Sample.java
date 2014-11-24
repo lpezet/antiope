@@ -5,6 +5,8 @@ package com.github.lpezet.antiope.metrics.aws;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
@@ -20,7 +22,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.internal.StaticCredentialsProvider;
 import com.github.lpezet.antiope.APIClientException;
@@ -120,6 +121,9 @@ public class Sample {
 	private Server mServer;
 	private int mPort;
 	
+	private Server mCloudWatchServer;
+	private int mCloudWatchPort;
+	
 	@Before
 	public void setup() throws Exception {
 		mServer = new Server(0);
@@ -138,12 +142,46 @@ public class Sample {
 		});
 		mServer.start();
 		mPort = mServer.getConnectors()[0].getLocalPort();
+		
+		mCloudWatchServer = new Server(0);
+		mCloudWatchServer.setHandler(new AbstractHandler() {
+			
+			@Override
+			public void handle(String target, 
+					org.eclipse.jetty.server.Request baseRequest,
+					HttpServletRequest request, HttpServletResponse response)
+					throws IOException, ServletException {
+				System.out.println("CloudWatch Request....");
+				System.out.println("######### Got CloudWatch Request:\n" + printRequest(request));
+				response.setContentType("application/xml;charset=utf-8");
+		        response.setStatus(HttpServletResponse.SC_OK);
+		        baseRequest.setHandled(true);
+		        response.getWriter().println("<ok/>");
+			}
+
+			private String printRequest(HttpServletRequest pRequest) throws IOException {
+				StringBuffer oBuf = new StringBuffer(pRequest.getMethod()).append(" ").append(pRequest.getPathInfo());
+				for(Enumeration<String> e = pRequest.getHeaderNames(); e.hasMoreElements(); ) {
+					String oHeaderName = e.nextElement();
+					oBuf.append("\n").append(oHeaderName).append(": ").append(pRequest.getHeader(oHeaderName));
+				}
+				if (pRequest.getInputStream() != null) {
+					oBuf.append("\n\n").append(IOUtils.toString(pRequest.getInputStream()));
+				}
+				return oBuf.toString();
+			}
+		});
+		mCloudWatchServer.start();
+		mCloudWatchPort = mCloudWatchServer.getConnectors()[0].getLocalPort();
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		mServer.stop();
 		mServer.destroy();
+		
+		mCloudWatchServer.stop();
+		mCloudWatchServer.destroy();
 	}
 	
 	@Test(timeout=60000)
@@ -153,14 +191,21 @@ public class Sample {
 		oAPIConfig.setProfilingEnabled(true);
 		AdvancedAPIClientImpl oClient = new AdvancedAPIClientImpl(oAPIConfig, oHttpClient, mPort);
 		
+		Config oConfig = new Config();
 		CloudWatchConfig oCWConfig = new CloudWatchConfig();
+		oConfig.setCloudWatchConfig(oCWConfig);
+		
+		oCWConfig.setCloudWatchEndPoint("http://localhost:" + mCloudWatchPort);
 		oCWConfig.setQueuePollTimeoutMilli(TimeUnit.SECONDS.toMillis(5));
 		oCWConfig.setCredentialsProvider(new StaticCredentialsProvider(new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY)));
-		Config oConfig = new Config();
-		oConfig.setCloudWatchConfig(oCWConfig);
+		
 		MetricsConfig oMConfig = new MetricsConfig();
-		oMConfig.setMetricNameSpace("Antiope/Test");
 		oConfig.setMetricsConfig(oMConfig);
+		oMConfig.setMetricNameSpace("Antiope/Test");
+		// Reset default metrics to just Client Execute Time
+		oMConfig.getMetricsRegistry().setMetricTypes(Arrays.asList( APIRequestMetrics.ClientExecuteTime));
+		//oMConfig.getMetricsRegistry().setMetricTypes(new ArrayList<MetricType>());
+		oMConfig.setMachineMetricExcluded(true);
 		IMetricsCollector oMetricsCollector = new DefaultMetricsCollectorFactory(oConfig).getInstance();
 		oClient.setMetricsCollector(oMetricsCollector);
 		
