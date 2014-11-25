@@ -50,6 +50,7 @@ public class DefaultMetricsCollectorFactory implements ThreadedMetricsCollector.
         Config oConfig = new Config();
         oConfig.setCloudWatchConfig(oCloudWatchConfig);
         oConfig.setMetricsConfig(mConfig.getMetricsConfig());
+        
         MetricsCollectorSupport.startSingleton(oConfig);
         return MetricsCollectorSupport.getInstance();
     }

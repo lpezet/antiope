@@ -26,6 +26,10 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.github.lpezet.antiope.dao.Request;
 import com.github.lpezet.antiope.dao.Response;
+import com.github.lpezet.antiope.metrics.APIRequestMetrics;
+import com.github.lpezet.antiope.metrics.IMetrics;
+import com.github.lpezet.antiope.metrics.MetricType;
+import com.github.lpezet.antiope.metrics.aws.spi.PredefinedMetricTransformer;
 
 /**
  * This is the default implementation of an AWS SDK request metric collection
@@ -37,6 +41,7 @@ import com.github.lpezet.antiope.dao.Response;
 public class MetricsCollectorSupport extends ThreadedMetricsCollector {
     protected final static Logger mLogger = LoggerFactory.getLogger(MetricsCollectorSupport.class);
     private static volatile MetricsCollectorSupport singleton;
+    private final MetricsCollectorSupportImpl mMetricsCollectorImpl;
     
     /** Returns the singleton instance; or null if there isn't one. */
     static MetricsCollectorSupport getInstance() {
@@ -83,8 +88,8 @@ public class MetricsCollectorSupport extends ThreadedMetricsCollector {
         return false;
     }
 
-    private final RequestMetricsCollectorSupport mRequestMetricsCollector;
-    private final ServiceMetricsCollectorSupport mServiceMetricsCollector;
+    //private final RequestMetricsCollectorSupport mRequestMetricsCollector;
+    //private final ServiceMetricsCollectorSupport mServiceMetricsCollector;
 
     private final BlockingQueue<MetricDatum> mQueue;
 //    private final PredefinedMetricTransformer transformer = new PredefinedMetricTransformer();
@@ -97,8 +102,9 @@ public class MetricsCollectorSupport extends ThreadedMetricsCollector {
         }
         mConfig = pConfig;
         mQueue = new LinkedBlockingQueue<MetricDatum>(pConfig.getCloudWatchConfig().getMetricQueueSize());
-        mRequestMetricsCollector = new RequestMetricsCollectorSupport(pConfig, mQueue);
-        mServiceMetricsCollector = new ServiceMetricsCollectorSupport(pConfig, mQueue);
+        mMetricsCollectorImpl = new MetricsCollectorSupportImpl(pConfig, mQueue);
+        //mRequestMetricsCollector = new RequestMetricsCollectorSupport(pConfig, mQueue);
+        //mServiceMetricsCollector = new ServiceMetricsCollectorSupport(pConfig, mQueue);
     }
 
     @Override
@@ -143,6 +149,6 @@ public class MetricsCollectorSupport extends ThreadedMetricsCollector {
     
     @Override
     public void collectMetrics(Request<?> pRequest, Response<?> pResponse) {
-    	mRequestMetricsCollector.collectMetrics(pRequest, pResponse);
+    	mMetricsCollectorImpl.collectMetrics(pRequest, pResponse);
     }
 }

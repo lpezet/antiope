@@ -7,6 +7,9 @@ import java.util.Set;
 
 import com.amazonaws.regions.Regions;
 import com.github.lpezet.antiope.metrics.MetricType;
+import com.github.lpezet.antiope.metrics.aws.spi.CompositeMetricTransformer;
+import com.github.lpezet.antiope.metrics.aws.spi.IMetricTransformer;
+import com.github.lpezet.antiope.metrics.aws.spi.PredefinedMetricTransformer;
 
 /**
  * @author Luc Pezet
@@ -24,6 +27,7 @@ public class MetricsConfig {
 	private String mJvmMetricName;
 	private Regions mRegion;
 	private MetricsRegistry mMetricsRegistry = new MetricsRegistry();
+	private IMetricTransformer mMetricTransformer = new CompositeMetricTransformer().with( new PredefinedMetricTransformer() );
 	
 	public boolean isMachineMetricExcluded() {
 		return mMachineMetricExcluded;
@@ -87,5 +91,15 @@ public class MetricsConfig {
 	}
 	public Set<MetricType> getPredefinedMetrics() {
 		return mMetricsRegistry.predefinedMetrics();
+	}
+	public IMetricTransformer getMetricTransformer() {
+		return mMetricTransformer;
+	}
+	public void setMetricTransformer(IMetricTransformer pMetricTransformer) {
+		mMetricTransformer = pMetricTransformer;
+	}
+	public MetricsConfig withMetricTransformer(IMetricTransformer pValue) {
+		mMetricTransformer = pValue;
+		return this;
 	}
 }

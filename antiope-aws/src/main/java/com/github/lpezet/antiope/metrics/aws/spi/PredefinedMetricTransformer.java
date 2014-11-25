@@ -16,7 +16,7 @@
 package com.github.lpezet.antiope.metrics.aws.spi;
 
 import static com.github.lpezet.antiope.metrics.aws.spi.MetricData.newMetricDatum;
-import static com.github.lpezet.antiope.metrics.aws.spi.RequestMetricTransformer.Utils.endTimestamp;
+import static com.github.lpezet.antiope.metrics.aws.spi.IMetricTransformer.Utils.endTimestamp;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +53,7 @@ import com.github.lpezet.antiope.metrics.TimingInfo;
  * @see RequestMetricCollector
  */
 @ThreadSafe
-public class PredefinedMetricTransformer {
+public class PredefinedMetricTransformer implements IMetricTransformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(PredefinedMetricTransformer.class);
     static final boolean INCLUDE_REQUEST_TYPE = true;
     static final boolean EXCLUDE_REQUEST_TYPE = !INCLUDE_REQUEST_TYPE;
@@ -113,6 +113,11 @@ public class PredefinedMetricTransformer {
                     + pMetricType.name() + " for " + reqClassName);
         }
         return Collections.emptyList();
+    }
+    
+    @Override
+    public boolean canHandle(MetricType pMetricType, Request<?> pRequest, Response<?> pResponse) {
+    	return (pMetricType instanceof APIRequestMetrics);
     }
 
     /**

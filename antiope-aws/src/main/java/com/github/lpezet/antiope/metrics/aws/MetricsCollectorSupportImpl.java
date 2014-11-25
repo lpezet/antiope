@@ -1,16 +1,5 @@
-/*
- * Copyright 2010-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+/**
+ * 
  */
 package com.github.lpezet.antiope.metrics.aws;
 
@@ -24,46 +13,26 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.github.lpezet.antiope.dao.Request;
 import com.github.lpezet.antiope.dao.Response;
-import com.github.lpezet.antiope.metrics.APIRequestMetrics;
 import com.github.lpezet.antiope.metrics.IMetrics;
 import com.github.lpezet.antiope.metrics.IMetricsCollector;
 import com.github.lpezet.antiope.metrics.MetricType;
-import com.github.lpezet.antiope.metrics.aws.spi.PredefinedMetricTransformer;
+import com.github.lpezet.antiope.metrics.aws.spi.IMetricTransformer;
 
 /**
- * This is the default implementation of an AWS SDK request metric collection
- * system.
  * 
- * @see RequestMetricsCollector
+ * @author Luc Pezet
  */
 @ThreadSafe
-public class RequestMetricsCollectorSupport implements IMetricsCollector {
-    protected final static Logger mLogger = LoggerFactory.getLogger(RequestMetricsCollectorSupport.class);
+public class MetricsCollectorSupportImpl implements IMetricsCollector {
+    protected final static Logger mLogger = LoggerFactory.getLogger(MetricsCollectorSupportImpl.class);
     private final BlockingQueue<MetricDatum> mQueue;
-    private final PredefinedMetricTransformer mTransformer = new PredefinedMetricTransformer();
+    private IMetricTransformer mTransformer = IMetricTransformer.NONE;
     private final Set<MetricType> mPredefinedMetrics;
     
-    /*
-    static {
-    	PREDIFIED_METRICS.add(APIRequestMetrics.ClientExecuteTime);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.Exception);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.ThrottleException);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientRetryCount);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpRequestTime);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.RequestCount);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.RetryCount);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientSendRequestTime);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientReceiveResponseTime);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientPoolAvailableCount);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientPoolLeasedCount);
-    	PREDIFIED_METRICS.add(APIRequestMetrics.HttpClientPoolPendingCount);
-    	//TODO: AWSServiceMetrics.HttpClientGetConnectionTime
-    }
-    */
-    
-    protected RequestMetricsCollectorSupport(Config pConfig, BlockingQueue<MetricDatum> pQueue) {
+    protected MetricsCollectorSupportImpl(Config pConfig, BlockingQueue<MetricDatum> pQueue) {
         this.mQueue = pQueue;
         mPredefinedMetrics = pConfig.getMetricsConfig().getPredefinedMetrics();
+        mTransformer = pConfig.getMetricsConfig().getMetricTransformer();
     }
 
     /**
@@ -89,16 +58,17 @@ public class RequestMetricsCollectorSupport implements IMetricsCollector {
     }
     
     private void collectMetrics0(Request<?> pRequest, Response<?> pResponse) {
-        IMetrics oArm = pRequest.getMetrics();
+    	IMetrics oArm = pRequest.getMetrics();
         if (oArm == null) { // || !arm.isEnabled()) {
             return;
         }
         for (MetricType oType: mPredefinedMetrics) {
-            if (!(oType instanceof APIRequestMetrics))
-                continue;
-            //if (mLogger.isDebugEnabled()) mLogger.debug("Collecting metric: " + oType);
-            PredefinedMetricTransformer oTransformer = getTransformer();
-            for (MetricDatum datum : oTransformer.toMetricData(oType, pRequest, pResponse)) {
+        	//if (!(oType instanceof APIRequestMetrics))
+            //    continue;
+            if (mLogger.isDebugEnabled()) mLogger.debug("Collecting metric: " + oType);
+        	if (!mTransformer.canHandle(oType, pRequest, pResponse))
+        		continue;
+            for (MetricDatum datum : mTransformer.toMetricData(oType, pRequest, pResponse)) {
                 try {
                     if (!addMetricsToQueue(datum)) {
                         if (mLogger.isDebugEnabled()) {
@@ -125,5 +95,5 @@ public class RequestMetricsCollectorSupport implements IMetricsCollector {
         return mQueue.offer(pMetric); 
     }
     /** Returns the predefined metrics transformer. */
-    protected PredefinedMetricTransformer getTransformer() { return mTransformer; }
+    //protected PredefinedMetricTransformer getTransformer() { return mTransformer; }
 }

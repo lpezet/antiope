@@ -47,7 +47,7 @@ public enum MetricTransformerFactory {
      * transformers to be skipped in case some service specific class files are
      * absent in the classpath.
      */
-    private volatile RequestMetricTransformer mRequestMetricTransformer;
+    private volatile IMetricTransformer mMetricTransformer;
 
     /**
      * Returns the fully qualified class name of the request metric
@@ -60,14 +60,14 @@ public enum MetricTransformerFactory {
     /**
      * @param pFqcn fully qualified class name.
      */
-    private RequestMetricTransformer loadRequestMetricTransformer(String pFqcn) {
+    private IMetricTransformer loadRequestMetricTransformer(String pFqcn) {
        Log log = LogFactory.getLog(MetricTransformerFactory.class);
        if (log.isDebugEnabled()) {
            log.debug("Loading " + pFqcn);
        }
         try {
             Class<?> c = Class.forName(pFqcn);
-            return (RequestMetricTransformer)c.newInstance();
+            return (IMetricTransformer)c.newInstance();
         } catch (Throwable e) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to load " + pFqcn
@@ -75,11 +75,11 @@ public enum MetricTransformerFactory {
                         + " specific predefined metrics", e);
             }
         }
-        return RequestMetricTransformer.NONE;
+        return IMetricTransformer.NONE;
    }
 
-    public RequestMetricTransformer getRequestMetricTransformer() {
-        RequestMetricTransformer oTransformer = mRequestMetricTransformer;
+    public IMetricTransformer getRequestMetricTransformer() {
+        IMetricTransformer oTransformer = mMetricTransformer;
         String oPackageName = mTransformerPackage;
         if (oTransformer != null
         &&  oPackageName.equals(oTransformer.getClass().getPackage().getName())) {
@@ -87,6 +87,6 @@ public enum MetricTransformerFactory {
         }
         String oFqcn = MetricTransformerFactory
             .buildRequestMetricTransformerFQCN(name(), oPackageName);
-        return this.mRequestMetricTransformer = loadRequestMetricTransformer(oFqcn);
+        return this.mMetricTransformer = loadRequestMetricTransformer(oFqcn);
     }
 }

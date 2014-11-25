@@ -3,6 +3,8 @@
  */
 package com.github.lpezet.antiope.metrics.aws;
 
+import com.github.lpezet.antiope.metrics.IMetricsCollector;
+
 /**
  * @author Luc Pezet
  *
@@ -12,7 +14,6 @@ public class Config {
 	private CloudWatchConfig mCloudWatchConfig;
 	private MetricsConfig mMetricsConfig;
 	
-
 	public CloudWatchConfig getCloudWatchConfig() {
 		return mCloudWatchConfig;
 	}
