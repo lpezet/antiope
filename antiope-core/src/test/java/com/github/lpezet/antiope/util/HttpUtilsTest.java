@@ -12,6 +12,7 @@ import java.net.URI;
 
 import org.junit.Test;
 
+import com.github.lpezet.antiope.be.APIWebServiceRequest;
 import com.github.lpezet.antiope.dao.DefaultRequest;
 import com.github.lpezet.antiope.dao.HttpMethodName;
 import com.github.lpezet.antiope.dao.Request;
@@ -55,18 +56,18 @@ public class HttpUtilsTest {
 	
 	@Test
 	public void usePayloadForQueryParameters() {
-		Request<Object> oRequest = new DefaultRequest<Object>(null);
+		Request<APIWebServiceRequest> oRequest = new DefaultRequest<APIWebServiceRequest>(null);
 		oRequest.setHttpMethod(HttpMethodName.POST);
 		oRequest.setContent(null);
 		assertTrue( HttpUtils.usePayloadForQueryParameters(oRequest) );
 		
 		// not a POST method
-		oRequest = new DefaultRequest<Object>(null);
+		oRequest = new DefaultRequest<APIWebServiceRequest>(null);
 		oRequest.setHttpMethod(HttpMethodName.GET);
 		assertFalse( HttpUtils.usePayloadForQueryParameters(oRequest) );
 		
 		// POST with content already
-		oRequest = new DefaultRequest<Object>(null);
+		oRequest = new DefaultRequest<APIWebServiceRequest>(null);
 		oRequest.setHttpMethod(HttpMethodName.POST);
 		oRequest.setContent(new ByteArrayInputStream("hello world".getBytes()));
 		assertFalse( HttpUtils.usePayloadForQueryParameters(oRequest) );
@@ -75,12 +76,12 @@ public class HttpUtilsTest {
 	
 	@Test
 	public void encodeParameters() {
-		Request<Object> oRequest = new DefaultRequest<Object>(null);
+		Request<APIWebServiceRequest> oRequest = new DefaultRequest<APIWebServiceRequest>(null);
 		oRequest.addParameter("hello", "world");
 		oRequest.addParameter("bye", "bye world");
 		oRequest.addParameter("abc", "~!@#$%^&*()_+[]\\{}|;':\",./<>?");
 		
-		assertEquals("hello=world&abc=%7E%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%5C%7B%7D%7C%3B%27%3A%22%2C.%2F%3C%3E%3F&bye=bye+world", HttpUtils.encodeParameters(oRequest));
+		assertEquals("hello=world&bye=bye+world&abc=%7E%21%40%23%24%25%5E%26*%28%29_%2B%5B%5D%5C%7B%7D%7C%3B%27%3A%22%2C.%2F%3C%3E%3F", HttpUtils.encodeParameters(oRequest));
 	}
 	
 	@Test

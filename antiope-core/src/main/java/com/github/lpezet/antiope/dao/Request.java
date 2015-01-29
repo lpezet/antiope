@@ -25,7 +25,7 @@ import com.github.lpezet.antiope.metrics.IMetrics;
  * @author luc
  *
  */
-public interface Request<T> {
+public interface Request<T extends APIWebServiceRequest> {
 	/**
      * Adds the specified header to this request.
      *
@@ -163,7 +163,7 @@ public interface Request<T> {
      * @return The original, user facing request object which this request
      *         object is representing.
      */
-    public APIWebServiceRequest getOriginalRequest();
+    public T getOriginalRequest();
     
     /**
      * Returns the optional value for time offset for this request.  This

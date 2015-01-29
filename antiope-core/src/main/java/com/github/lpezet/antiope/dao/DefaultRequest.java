@@ -17,6 +17,7 @@ package com.github.lpezet.antiope.dao;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.http.annotation.NotThreadSafe;
@@ -29,16 +30,16 @@ import com.github.lpezet.antiope.metrics.IMetrics;
  *
  */
 @NotThreadSafe
-public class DefaultRequest<T> implements Request<T> {
+public class DefaultRequest<T extends APIWebServiceRequest> implements Request<T> {
 
 	/** The resource path being requested */
     private String resourcePath;
 
     /** Map of the parameters being sent as part of this request */
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private Map<String, String> parameters = new LinkedHashMap<String, String>();
 
     /** Map of the headers included in this request */
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new LinkedHashMap<String, String>();
 
     /** The service endpoint to which this request should be sent */
     private URI endpoint;
@@ -50,7 +51,7 @@ public class DefaultRequest<T> implements Request<T> {
      * The original, user facing request object which this internal request
      * object is representing
      */
-    private final APIWebServiceRequest originalRequest;
+    private final T originalRequest;
 
     /** The HTTP method to use when sending this request. */
     private HttpMethodName httpMethod = HttpMethodName.POST;
@@ -73,7 +74,7 @@ public class DefaultRequest<T> implements Request<T> {
      *            The original, user facing, API request being represented by
      *            this internal request object.
      */
-    public DefaultRequest(APIWebServiceRequest originalRequest, String serviceName) {
+    public DefaultRequest(T originalRequest, String serviceName) {
         this.serviceName = serviceName;
         this.originalRequest = originalRequest;
     }
@@ -97,7 +98,7 @@ public class DefaultRequest<T> implements Request<T> {
      * @return The original, user facing request object which this request
      *         object is representing.
      */
-    public APIWebServiceRequest getOriginalRequest() {
+    public T getOriginalRequest() {
         return originalRequest;
     }
 
