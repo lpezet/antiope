@@ -16,7 +16,6 @@ package com.github.lpezet.antiope.dao;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
