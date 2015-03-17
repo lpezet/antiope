@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.lpezet.antiope</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -156,7 +156,8 @@
 		<connection>scm:git:ssh://git@github.com/lpezet/antiope.git</connection>
     	<developerConnection>scm:git:ssh://git@github.com/lpezet/antiope.git</developerConnection>
 		<url>https://github.com/lpezet/antiope</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 
 	<build>
