@@ -45,7 +45,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="com.github.lpezet" level="ALL"/>
+	<logger name="com.github.lpezet" level="ERROR"/>
  
 	<root level="ERROR"> 
 		<appender-ref ref="FILE" />
