@@ -121,7 +121,6 @@ public class StaxResponseHandler<T> implements HttpResponseHandler<APIWebService
      * underlying HTTP connection during the handle method, we don't need to
      * keep the HTTP connection open.
      *
-     * @see com.amazonaws.http.HttpResponseHandler#needsConnectionLeftOpen()
      */
     public boolean needsConnectionLeftOpen() {
         return false;

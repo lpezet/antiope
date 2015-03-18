@@ -45,6 +45,8 @@ public interface Request<T extends APIWebServiceRequest> {
     
     /**
      * Sets all headers, clearing any existing ones.
+     * @param headers
+     * 				Headers
      */
     public void setHeaders(Map<String, String> headers);
 
@@ -95,6 +97,8 @@ public interface Request<T extends APIWebServiceRequest> {
     
     /**
      * Sets all parameters, clearing any existing values.
+     * @param parameters
+     * 				Parameters
      */
     public void setParameters(Map<String, String> parameters);       
 
@@ -193,6 +197,8 @@ public interface Request<T extends APIWebServiceRequest> {
      * Value is in seconds, positive values imply the current clock is "fast",
      * negative values imply clock is slow.
      *
+     * @param timeOffset
+     * 				The optional value for time offset (in seconds) for this request.
      * @return The updated request object.
      */
     public Request<T> withTimeOffset(int timeOffset);

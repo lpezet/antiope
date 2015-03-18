@@ -111,7 +111,7 @@ public class HttpUtils {
      * URIs).
      *
      * @param uri
-     *
+     *			Uri
      * @return True if the specified URI is using a non-standard port, otherwise
      *         false.
      */
@@ -167,6 +167,11 @@ public class HttpUtils {
     /**
      * Append the given path to the given baseUri.
      * By default, all slash characters in path will not be url-encoded.
+     * @param baseUri
+     * 			Base URI
+     * @param path
+     * 			Path
+     * @return Uri with path
      */
     public static String appendUri(String baseUri, String path) {
         return appendUri(baseUri, path, false);

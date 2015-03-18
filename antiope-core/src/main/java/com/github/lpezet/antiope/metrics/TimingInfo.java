@@ -62,6 +62,7 @@ public class TimingInfo {
 	 * and the current time (in nanosecond) used for timing measurement.
 	 * For more info, see:
 	 * https://blogs.oracle.com/dholmes/entry/inside_the_hotspot_vm_clocks
+	 * @return TimingInfo
 	 */
 	public static TimingInfo startTiming() {
 		return new TimingInfo(Long.valueOf(System.currentTimeMillis()), System.nanoTime(), null);
@@ -72,6 +73,7 @@ public class TimingInfo {
 	 * and the current time (in nanosecond) used for timing measurement.
 	 * For more info, see:
 	 * https://blogs.oracle.com/dholmes/entry/inside_the_hotspot_vm_clocks
+	 * @return TimingInfo
 	 */
 	public static TimingInfo startTimingFullSupport() {
 		return new TimingInfoFullSupport(Long.valueOf(System.currentTimeMillis()), System.nanoTime(), null);
@@ -82,6 +84,7 @@ public class TimingInfo {
 	 * 
 	 * @param startTimeNano
 	 *            start time in nanosecond
+	 * @return TimingInfo
 	 */
 	public static TimingInfo startTimingFullSupport(long startTimeNano) {
 		return new TimingInfoFullSupport(null, startTimeNano, null);
@@ -95,6 +98,7 @@ public class TimingInfo {
 	 *            start time in nanosecond
 	 * @param endTimeNano
 	 *            end time in nanosecond
+	 * @return TimingInfo
 	 */
 	public static TimingInfo newTimingInfoFullSupport(long startTimeNano, long endTimeNano) {
 		return new TimingInfoFullSupport(null, startTimeNano, Long.valueOf(endTimeNano));
@@ -111,6 +115,7 @@ public class TimingInfo {
 	 *            start time in nanosecond
 	 * @param endTimeNano
 	 *            end time in nanosecond
+	 * @return TimingInfo
 	 */
 	public static TimingInfo newTimingInfoFullSupport(long startEpochTimeMilli, long startTimeNano, long endTimeNano) {
 		return new TimingInfoFullSupport(Long.valueOf(startEpochTimeMilli), startTimeNano, Long.valueOf(endTimeNano));
@@ -119,6 +124,11 @@ public class TimingInfo {
 	/**
 	 * Returns an instance of {@link TimingInfo} that is not modifiable, given
 	 * the start and end nano times.
+	 * @param startTimeNano
+	 * 			start time in nanoseconds.
+	 * @param endTimeNano
+	 * 			end time in nanoseconds.
+	 * @return Unmodifiable TimingInfo
 	 */
 	public static TimingInfo unmodifiableTimingInfo(long startTimeNano, Long endTimeNano) {
 		return new TimingInfoUnmodifiable(null, startTimeNano, endTimeNano);
@@ -133,6 +143,7 @@ public class TimingInfo {
 	 *            start time in nanosecond
 	 * @param endTimeNano
 	 *            end time in nanosecond; or null if not known
+	 * @return Unmodifiable TimingInfo.
 	 */
 	public static TimingInfo unmodifiableTimingInfo(long startEpochTimeMilli, long startTimeNano, Long endTimeNano) {
 		return new TimingInfoUnmodifiable(startEpochTimeMilli, startTimeNano, endTimeNano);
@@ -219,6 +230,11 @@ public class TimingInfo {
 	/**
 	 * Returns the duration in milliseconds as double, preserving the decimal
 	 * precision as necessary, for the given start and end time in nanoseconds.
+	 * @param startTimeNano
+	 * 			Start time in nanoseconds.
+	 * @param endTimeNano
+	 * 			End time in nanoseconds.
+	 * @return Duration in millseconds.
 	 */
 	public static double durationMilliOf(long startTimeNano, long endTimeNano) {
 		double micros = (double) TimeUnit.NANOSECONDS.toMicros(endTimeNano - startTimeNano);

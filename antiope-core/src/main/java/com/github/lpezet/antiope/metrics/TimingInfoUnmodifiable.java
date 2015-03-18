@@ -40,13 +40,13 @@ final public class TimingInfoUnmodifiable extends TimingInfo {
     /**
      * Always throws {@link UnsupportedOperationException}.
      */
-    @Override public void setEndTime(long _) {
+    @Override public void setEndTime(long value) {
         throw new UnsupportedOperationException();
     }
     /**
      * Always throws {@link UnsupportedOperationException}.
      */
-    @Override public void setEndTimeNano(long _) {
+    @Override public void setEndTimeNano(long value) {
         throw new UnsupportedOperationException();
     }
     /**

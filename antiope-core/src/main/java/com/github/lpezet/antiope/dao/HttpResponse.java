@@ -37,8 +37,6 @@ public class HttpResponse {
 	/**
 	 * Constructs a new HttpResponse associated with the specified request.
 	 * 
-	 * @param request
-	 *            The associated request that generated this response.
 	 * @param httpRequest
 	 *            The underlying http request that generated this response.
 	 */

@@ -66,8 +66,14 @@ public class LogMetricsCollector implements IMetricsCollector {
      * in the returned list should be exactly one when there is no retries, or
      * more than one when there are retries.
      * 
+     * @param metricType
+     * 			metric type
+     * @param req
+     * 			request
+     * @param response
+     * 			response
      * @param includesRequestType
-     *            true iff the "request" dimension is to be included;
+     			true iff the "request" dimension is to be included;
      */
     protected void latencyMetricOf(MetricType metricType, Request<?> req, Object response, boolean includesRequestType) {
     	IMetrics m = req.getMetrics();
@@ -110,9 +116,13 @@ public class LogMetricsCollector implements IMetricsCollector {
 	
 	/**
      * Returns a request type specific metrics for
-     * {@link Field#ClientExecuteTime} which is special in the sense that it
+     * {@link APIRequestMetrics#ClientExecuteTime} which is special in the sense that it
      * makes a more accurate measurement by taking the {@link TimingInfo} at the
      * root into account.
+     * @param req
+     * 			request
+     * @param response
+     * 			response
      */
     protected void latencyOfClientExecuteTime(Request<?> req, Object response) {
     	IMetrics m = req.getMetrics();
@@ -143,6 +153,9 @@ public class LogMetricsCollector implements IMetricsCollector {
     
     /**
      * Returns the name of the type of request.
+     * @param req
+     * 			request
+     * @return Simple type of request.
      */
     private String requestType(Request<?> req) {
         return req.getOriginalRequest().getClass().getSimpleName();

@@ -126,11 +126,15 @@ public abstract class AbstractClient {
         return createExecutionContext(req.getOriginalRequest());
     }
     
-    /**
+   /**
      * Common routine to end a client API request/response execution and collect
      * the request metrics.  Caller of this routine is responsible for starting
      * the event for {@link APIRequestMetrics#ClientExecuteTime} and call this method
      * in a try-finally block. 
+     * 
+     * @param pMetrics Metrics
+     * @param pRequest Request
+     * @param pResponse Response
      */
     protected final void endClientExecution(IMetrics pMetrics, Request<?> pRequest, Response<?> pResponse) {
         if (pRequest != null) {
@@ -144,6 +148,8 @@ public abstract class AbstractClient {
     /**
      * Returns the client specific {@link IMetricsCollector}; or null if
      * there is none.
+     * 
+     * @return IMetricsCollector
      */
     public IMetricsCollector getMetricsCollector() {
 		return mMetricsCollector;
@@ -156,6 +162,10 @@ public abstract class AbstractClient {
     /**
      * Returns the most specific request metric collector, starting from the
      * request level, then client level, then finally the API SDK level.
+     * 
+     * @param req
+     * 			request.
+     * @return IMetricsCollector
      */
     protected final IMetricsCollector findRequestMetricCollector(Request<?> req) {
         APIWebServiceRequest origReq = req.getOriginalRequest();

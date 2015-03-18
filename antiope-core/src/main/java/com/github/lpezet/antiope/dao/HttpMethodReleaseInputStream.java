@@ -32,11 +32,11 @@ public class HttpMethodReleaseInputStream  extends InputStream {
     private boolean underlyingStreamConsumed = false;
 
     /**
-     * Constructs an input stream based on an {@link HttpMethod} object
+     * Constructs an input stream based on an {@link org.apache.http.HttpEntityEnclosingRequest} object
      * representing an HTTP connection. If a connection input stream is
      * available, this constructor wraps the underlying input stream and makes
      * that stream available. If no underlying connection is available, an empty
-     * {@link ByteArrayInputStream} is made available.
+     * {@link java.io.ByteArrayInputStream} is made available.
      * 
      * @param httpMethod
      *            The HTTP method being executed, whose response content is to
@@ -73,7 +73,7 @@ public class HttpMethodReleaseInputStream  extends InputStream {
      * perform all the necessary cleanup through the correct use of HttpClient
      * methods.
      *
-     * @throws IOException
+     * @throws IOException IOException
      */
     protected void releaseConnection() throws IOException {
         if (!alreadyReleased) {

@@ -42,7 +42,7 @@ public class APICredentialsProviderChain implements IAPICredentialsProvider {
      * it will call each of these credential providers in the same order
      * specified here until one of them returns API security credentials.
      *
-     * @param mCredentialsProviders
+     * @param pCredentialsProviders
      *            The chain of credentials providers.
      */
     public APICredentialsProviderChain(IAPICredentialsProvider... pCredentialsProviders) {

@@ -290,6 +290,10 @@ public abstract class AdvancedAPIClient<R> extends BaseAPIClient<R> {
 	 * @param pMethod
 	 *            The HTTP method that was invoked, and contains the contents of
 	 *            the response.
+	 * @param pHttpResponse
+	 * 			  The HTTP Response.
+	 * @param pApacheHttpResponse
+	 * 			  Apache HTTP Response.
 	 * @param pExecutionContext
 	 *            Extra state information about the request currently being
 	 *            executed.

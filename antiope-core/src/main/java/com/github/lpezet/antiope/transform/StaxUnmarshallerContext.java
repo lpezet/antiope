@@ -90,7 +90,7 @@ public class StaxUnmarshallerContext {
      * Returns the text contents of the current element being parsed.
      *
      * @return The text contents of the current element being parsed.
-     * @throws XMLStreamException
+     * @throws XMLStreamException XMLStreamException
      */
     public String readText() throws XMLStreamException {
         if (mCurrentEvent.isAttribute()) {
@@ -174,6 +174,7 @@ public class StaxUnmarshallerContext {
      * @return true if this unmarshaller context is at the very beginning of a
      *         source document (i.e. no data has been parsed from the document
      *         yet).
+     * @throws XMLStreamException XMLStreamException
      */
     public boolean isStartOfDocument() throws XMLStreamException {
         return mEventReader.peek().isStartDocument();
@@ -184,7 +185,7 @@ public class StaxUnmarshallerContext {
      *
      * @return The next XML event for the document being parsed.
      *
-     * @throws XMLStreamException
+     * @throws XMLStreamException XMLStreamException
      */
     public XMLEvent nextEvent() throws XMLStreamException {
         if (mAttributeIterator != null && mAttributeIterator.hasNext()) {

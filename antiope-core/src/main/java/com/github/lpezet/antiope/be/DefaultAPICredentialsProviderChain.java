@@ -21,7 +21,8 @@ package com.github.lpezet.antiope.be;
 public class DefaultAPICredentialsProviderChain extends APICredentialsProviderChain {
 
 	/**
-	 * 
+	 * @param pConfiguration
+	 * 			APIConfiguration
 	 */
 	public DefaultAPICredentialsProviderChain(APIConfiguration pConfiguration) {
 		super( 

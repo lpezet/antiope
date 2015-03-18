@@ -34,6 +34,9 @@ public class VersionInfoUtils {
     /**
      * Loads the versionInfo.properties file and return instance of VersionInfoUtils.
      * E.g.: /com/amazonaws/sdk/versionInfo.properties
+     * @param pVersionInfoFile
+     * 					Version Info file
+     * @return VersionInfo
      */
     public static VersionInfo load(String pVersionInfoFile) {
     	InputStream inputStream = ClassLoaderHelper.getResourceAsStream(pVersionInfoFile, true, VersionInfoUtils.class);

@@ -142,7 +142,7 @@ public class JsonUnmarshallerContext {
      *
      * @return The text of the current token.
      *
-     * @throws IOException
+     * @throws IOException IOException
      */
     public String readText() throws IOException {
         switch (currentToken) {
@@ -192,6 +192,7 @@ public class JsonUnmarshallerContext {
     /**
      * Returns the name of the JSON field that is the nearest parent of the
      * current context.
+     * @return Current parent element.
      */
     public String getCurrentParentElement() {
         String parentElement;
@@ -347,6 +348,7 @@ public class JsonUnmarshallerContext {
     /**
      * This will return the deleted string in stackString when doing update on
      * the stack
+     * @return Last parsed parent element.
      */
     public String getLastParsedParentElement() {
         return lastParsedParentElement;

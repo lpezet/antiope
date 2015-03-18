@@ -49,25 +49,25 @@ public class APIConfiguration {
     /** The default HTTP user agent header for TSG Java SDK clients. */
     public static final String DEFAULT_USER_AGENT = "";// VersionInfoUtils.getUserAgent();
 
-    /**
+    /*
      * Default request retry policy, including the maximum retry count of 3, the
      * default retry condition and the default back-off strategy.
      * <p>
      * Note this default policy might be overridden by a service-specific
      * default policy, if the user doesn't provide a custom RetryPolicy
-     * implementation by {@link #setRetryPolicy(RetryPolicy)}. For example,
+     * implementation by link #setRetryPolicy(RetryPolicy). For example,
      * AmazonDynamoDBClient by default uses a different retry policy
-     * {@link PredefinedRetryPolicies#DYNAMODB_DEFAULT}.
+     * link PredefinedRetryPolicies#DYNAMODB_DEFAULT.
      * 
-     * @see PredefinedRetryPolicies#DEFAULT
-     * @see PredefinedRetryPolicies#DYNAMODB_DEFAULT
+     * see PredefinedRetryPolicies#DEFAULT
+     * see PredefinedRetryPolicies#DYNAMODB_DEFAULT
      */
     //public static final RetryPolicy DEFAULT_RETRY_POLICY = PredefinedRetryPolicies.DEFAULT;
     
-    /**
-     * The default on whether to use the {@link IdleConnectionReaper} to manage stale connections
+    /*
+     * The default on whether to use the link IdleConnectionReaper to manage stale connections
      *
-     * @see IdleConnectionReaper
+     * see IdleConnectionReaper
      */
     public static final boolean DEFAULT_USE_REAPER = true;
     
@@ -323,7 +323,7 @@ public class APIConfiguration {
 	/**
 	 * Sets the global time offset. If this value is set then all the subsequent
 	 * requests will use this value to generate timestamps. To adjust clock skew
-	 * per request use {@link Request#setTimeOffset(int)}
+	 * per request use {@link com.github.lpezet.antiope.dao.Request#setTimeOffset(int)}
 	 * 
 	 * @param timeOffset
 	 *            the time difference between local client and server
@@ -333,7 +333,7 @@ public class APIConfiguration {
 	}
 
 	/**
-	 * Gets the global time offset. See {@link Request#getTimeOffset()} if global time
+	 * Gets the global time offset. See {@link com.github.lpezet.antiope.dao.Request#getTimeOffset()} if global time
 	 * offset is not set.
 	 * 
 	 * @return globalTimeOffset an AtomicInteger that holds the value of time

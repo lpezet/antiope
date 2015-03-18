@@ -68,14 +68,13 @@ public class BaseMetrics implements IMetrics {
      * that order.
      * 
      * This feature is enabled if the system property
-     * "tsg.tripfilmsws.sdk.enableRuntimeProfiling" is set, or if a
-     * {@link RequestMetricCollector} is in use either at the request, web service
-     * client, or TSG SDK level.
+     * "api.sdk.enableRuntimeProfiling" is set, or if a
+     * {@link IMetricsCollector} is in use either at the request, web service
+     * client, or API SDK level.
      * 
      * @param eventName
      *            - The name of the event to start
      * 
-     * @see TSGSdkMetrics
      */
     @Override
     public void startEvent(String eventName) {
@@ -124,9 +123,9 @@ public class BaseMetrics implements IMetrics {
      * does not exist, then it creates one and initializes it to 1.
      * 
      * This feature is enabled if the system property
-     * "tsg.tripfilmsws.sdk.enableRuntimeProfiling" is set, or if a
-     * {@link RequestMetricCollector} is in use either at the request, web service
-     * client, or TSG SDK level.
+     * "api.sdk.enableRuntimeProfiling" is set, or if a
+     * {@link IMetricsCollector} is in use either at the request, web service
+     * client, or API SDK level.
      * 
      * @param event
      *            - The name of the event to count
@@ -156,9 +155,9 @@ public class BaseMetrics implements IMetrics {
      * all values a list.
      * 
      * This feature is enabled if the system property
-     * "tsg.tripfilmsws.sdk.enableRuntimeProfiling" is set, or if a
-     * {@link RequestMetricCollector} is in use either at the request, web service
-     * client, or TSG SDK level.
+     * "api.sdk.enableRuntimeProfiling" is set, or if a
+     * {@link IMetricsCollector} is in use either at the request, web service
+     * client, or API SDK level.
      * 
      * @param propertyName
      *            The name of the property

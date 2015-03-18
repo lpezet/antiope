@@ -113,12 +113,9 @@ public class RepeatableInputStreamRequestEntity  extends BasicHttpEntity {
 
     /**
      * Returns true if the underlying InputStream supports marking/reseting or
-     * if the underlying InputStreamRequestEntity is repeatable (i.e. its
-     * content length has been set to
-     * {@link InputStreamRequestEntity#CONTENT_LENGTH_AUTO} and therefore its
-     * entire contents will be buffered in memory and can be repeated).
+     * if the underlying InputStreamRequestEntity is repeatable.
      *
-     * @see org.apache.commons.httpclient.methods.RequestEntity#isRepeatable()
+     * @see org.apache.http.HttpEntity#isRepeatable()
      */
     @Override
     public boolean isRepeatable() {
@@ -135,7 +132,7 @@ public class RepeatableInputStreamRequestEntity  extends BasicHttpEntity {
      * cause if we continue to encounter errors, rather than masking the
      * original error.
      *
-     * @see org.apache.commons.httpclient.methods.RequestEntity#writeRequest(java.io.OutputStream)
+     * @see org.apache.http.HttpEntity#writeTo(java.io.OutputStream)
      */
     @Override
     public void writeTo(OutputStream output) throws IOException {
