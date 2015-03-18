@@ -211,6 +211,7 @@
 						<detectOfflineLinks>false</detectOfflineLinks>
 						<javadocVersion>1.6</javadocVersion>
 						<encoding>UTF-8</encoding>
+						<failOnError>false</failOnError>
 					</configuration>
 				</plugin>
 
