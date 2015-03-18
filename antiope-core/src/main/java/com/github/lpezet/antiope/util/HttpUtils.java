@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -143,10 +144,14 @@ public class HttpUtils {
      *         string for the parameters present in the specified request.
      */
     public static String encodeParameters(Request<?> request) {
-        List<NameValuePair> nameValuePairs = null;
-        if (request.getParameters().size() > 0) {
-            nameValuePairs = new ArrayList<NameValuePair>(request.getParameters().size());
-            for (Entry<String, String> entry : request.getParameters().entrySet()) {
+        return encodeParameters(request.getParameters());
+    }
+    
+    public static String encodeParameters(Map<String, String> pParameters) {
+    	List<NameValuePair> nameValuePairs = null;
+        if (pParameters.size() > 0) {
+            nameValuePairs = new ArrayList<NameValuePair>(pParameters.size());
+            for (Entry<String, String> entry : pParameters.entrySet()) {
                 nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
         }
