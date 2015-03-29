@@ -26,12 +26,11 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.github.lpezet.antiope.dao.Request;
 import com.github.lpezet.antiope.dao.Response;
-import com.github.lpezet.antiope.metrics.APIRequestMetrics;
-import com.github.lpezet.antiope.metrics.IMetrics;
-import com.github.lpezet.antiope.metrics.MetricType;
-import com.github.lpezet.antiope.metrics.aws.spi.PredefinedMetricTransformer;
 
 /**
+ * TODO: Change this implementation so it's no longer a singleton. 
+ * Or at least something that can be used across API clients.
+ * 
  * This is the default implementation of an AWS SDK request metric collection
  * system.
  * 
@@ -40,69 +39,19 @@ import com.github.lpezet.antiope.metrics.aws.spi.PredefinedMetricTransformer;
 @ThreadSafe
 public class MetricsCollectorSupport extends ThreadedMetricsCollector {
     protected final static Logger mLogger = LoggerFactory.getLogger(MetricsCollectorSupport.class);
-    private static volatile MetricsCollectorSupport singleton;
-    private final MetricsCollectorSupportImpl mMetricsCollectorImpl;
-    
-    /** Returns the singleton instance; or null if there isn't one. */
-    static MetricsCollectorSupport getInstance() {
-        return singleton;
-    }
-
-    /** 
-     * Starts a new CloudWatch collector if it's not already started.
-     *
-     * @return true if it is successfully started by this call; false if the
-     * collector is already running or if there is failure in trying to start
-     * the collector for the first time. 
-     */
-    static synchronized boolean startSingleton(Config pConfig) {
-        if (singleton != null) {
-            return false;
-        }
-        mLogger.info("Initializing " + MetricsCollectorSupport.class.getSimpleName());
-        return createAndStartCollector(pConfig);
-    }
-
-    /** Retarts with a new CloudWatch collector. */
-    static synchronized boolean restartSingleton(Config pConfig) {
-        if (singleton == null) {
-            throw new IllegalStateException(MetricsCollectorSupport.class.getSimpleName()
-                + " has neven been initialized");
-        }
-        mLogger.info("Re-initializing " + MetricsCollectorSupport.class.getSimpleName());
-        singleton.stop();
-        // singleton is set to null at this point via the stop method
-        return createAndStartCollector(pConfig);
-    }
-
-    /**
-     * Returns true if the collector is successfully created and started;
-     * false otherwise.
-     */
-    private static boolean createAndStartCollector(Config pConfig) {
-    	MetricsCollectorSupport oCollector = new MetricsCollectorSupport(pConfig);
-        if (oCollector.start()) {
-            singleton = oCollector;
-            return true;
-        }
-        return false;
-    }
-
-    //private final RequestMetricsCollectorSupport mRequestMetricsCollector;
-    //private final ServiceMetricsCollectorSupport mServiceMetricsCollector;
+    private final MetricsQueueCollection mMetricsCollectorImpl;
 
     private final BlockingQueue<MetricDatum> mQueue;
-//    private final PredefinedMetricTransformer transformer = new PredefinedMetricTransformer();
     private final Config mConfig;
     private MetricsUploaderThread mUploaderThread;
 
-    protected MetricsCollectorSupport(Config pConfig) {
+    public MetricsCollectorSupport(Config pConfig) {
         if (pConfig == null) {
             throw new IllegalArgumentException();
         }
         mConfig = pConfig;
         mQueue = new LinkedBlockingQueue<MetricDatum>(pConfig.getCloudWatchConfig().getMetricQueueSize());
-        mMetricsCollectorImpl = new MetricsCollectorSupportImpl(pConfig, mQueue);
+        mMetricsCollectorImpl = new MetricsQueueCollection(pConfig, mQueue);
         //mRequestMetricsCollector = new RequestMetricsCollectorSupport(pConfig, mQueue);
         //mServiceMetricsCollector = new ServiceMetricsCollectorSupport(pConfig, mQueue);
     }
@@ -129,9 +78,6 @@ public class MetricsCollectorSupport extends ThreadedMetricsCollector {
                 mUploaderThread.cancel();
                 mUploaderThread.interrupt();
                 mUploaderThread = null;
-                if (singleton == this) { // defensive check
-                    singleton = null;
-                }
                 return true;
             }
         }

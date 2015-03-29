@@ -3,8 +3,8 @@
  */
 package com.github.lpezet.antiope.metrics.aws;
 
+import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 
 import org.apache.http.annotation.ThreadSafe;
 import org.slf4j.Logger;
@@ -23,13 +23,13 @@ import com.github.lpezet.antiope.metrics.aws.spi.IMetricTransformer;
  * @author Luc Pezet
  */
 @ThreadSafe
-public class MetricsCollectorSupportImpl implements IMetricsCollector {
-    protected final static Logger mLogger = LoggerFactory.getLogger(MetricsCollectorSupportImpl.class);
-    private final BlockingQueue<MetricDatum> mQueue;
+public class MetricsQueueCollection implements IMetricsCollector {
+    protected final static Logger mLogger = LoggerFactory.getLogger(MetricsQueueCollection.class);
+    private final Queue<MetricDatum> mQueue;
     private IMetricTransformer mTransformer = IMetricTransformer.NONE;
     private final Set<MetricType> mPredefinedMetrics;
     
-    protected MetricsCollectorSupportImpl(Config pConfig, BlockingQueue<MetricDatum> pQueue) {
+    protected MetricsQueueCollection(Config pConfig, Queue<MetricDatum> pQueue) {
         this.mQueue = pQueue;
         mPredefinedMetrics = pConfig.getMetricsConfig().getPredefinedMetrics();
         mTransformer = pConfig.getMetricsConfig().getMetricTransformer();
