@@ -28,10 +28,7 @@ import com.github.lpezet.antiope.dao.Request;
 import com.github.lpezet.antiope.dao.Response;
 
 /**
- * TODO: Change this implementation so it's no longer a singleton. 
- * Or at least something that can be used across API clients.
- * 
- * This is the default implementation of an AWS SDK request metric collection
+ * This is the default implementation of an API request metric collection
  * system.
  * 
  * @see RequestMetricCollector
