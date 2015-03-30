@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.github.lpezet.antiope2.samples;
+package com.github.lpezet.antiope2.samples.internal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,6 +14,7 @@ import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.metrics.BaseMetrics;
 import com.github.lpezet.antiope2.metrics.IMetrics;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
+import com.github.lpezet.antiope2.samples.MyRequest;
 
 /**
  * @author Luc Pezet

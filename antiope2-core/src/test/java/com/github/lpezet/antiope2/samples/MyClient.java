@@ -7,6 +7,9 @@ import com.github.lpezet.antiope2.dao.http.IHttpNetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.dao.http.IHttpResponse;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
+import com.github.lpezet.antiope2.samples.internal.MyIO;
+import com.github.lpezet.antiope2.samples.internal.MyRequestMarshaller;
+import com.github.lpezet.antiope2.samples.internal.MyResponseUnmarshaller;
 
 
 /**
