@@ -18,6 +18,7 @@ import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.dao.http.IHttpResponse;
 import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClient;
 import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientMarshaller;
+import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientNetworkIO;
 import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientUnmarshaller;
 import com.github.lpezet.antiope2.metrics.IMetrics;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
@@ -63,15 +64,12 @@ public class MyTest {
 	public void simple() throws Exception {
 		MyClient oClient = newMyClient( buildHttpClient() );
 		
-		for (int i = 0; i < 100; i++) {
-			MyRequest oRequest = new MyRequest();
-			oRequest.setIP("75.179.140.18");
-			MyResponse oResponse = oClient.ask(oRequest);
-			assertNotNull(oResponse);
-			assertNotNull(oResponse.getContent());
-			//System.out.println("Content:\n" + oResponse.getContent());
-			System.out.println("####### " + i + " done.");
-		}
+		MyRequest oRequest = new MyRequest();
+		oRequest.setIP("75.179.140.18");
+		MyResponse oResponse = oClient.ask(oRequest);
+		assertNotNull(oResponse);
+		assertNotNull(oResponse.getContent());
+		System.out.println("Content:\n" + oResponse.getContent());
 	}
 	
 	@Test

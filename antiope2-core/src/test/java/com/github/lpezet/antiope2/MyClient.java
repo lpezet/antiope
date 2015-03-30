@@ -16,25 +16,22 @@ import com.github.lpezet.antiope2.metrics.IMetricsCollector;
 public class MyClient {
 
 	private IHttpNetworkIO<IHttpRequest, IHttpResponse> mNetworkIO;
+	
+	private MyIO<MyRequest, MyResponse> mAskIO;
 	private IMetricsCollector mMetricsCollector;
 	
 	public MyClient(IHttpNetworkIO<IHttpRequest, IHttpResponse> pNetworkIO, IMetricsCollector pMetricsCollector) {
 		mNetworkIO = pNetworkIO;
 		mMetricsCollector = pMetricsCollector;
+		setupIOs();
 	}
 	
+	private void setupIOs() {
+		mAskIO = new MyIO<MyRequest, MyResponse>(new MyRequestMarshaller(mMetricsCollector), mNetworkIO, new MyResponseUnmarshaller());
+	}
+
 	public MyResponse ask(MyRequest pRequest) throws Exception {
-		
-		MyIO<MyRequest, MyResponse> oIO = new MyIO<MyRequest, MyResponse>(new MyRequestMarshaller(), mNetworkIO, new MyResponseUnmarshaller(), mMetricsCollector);
-		
-		/*
-		IHttpRequest oHttpRequest = new MyRequestMarshaller().perform(pRequest);
-		oHttpRequest.setExecutionContext(oContext);
-		
-		IHttpResponse oHttpResponse = mNetworkIO.perform(oHttpRequest);
-		return new MyResponseUnmarshaller().perform(oHttpResponse);
-		*/
-		return oIO.perform(pRequest);
+		return mAskIO.perform(pRequest);
 	}
 	
 }

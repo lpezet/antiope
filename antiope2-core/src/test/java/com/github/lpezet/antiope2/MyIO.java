@@ -25,6 +25,9 @@ public class MyIO<RQ, RS> implements INetworkIO<RQ, RS> {
 	private IUnmarshaller<IHttpResponse, RS>			mUnmarshaller;
 	private IMetricsCollector							mMetricsCollector;
 
+	public MyIO(IMarshaller<RQ, IHttpRequest> pMarshaller, IHttpNetworkIO<IHttpRequest, IHttpResponse> pNetworkIO, IUnmarshaller<IHttpResponse, RS> pUnmarshaller) {
+		this(pMarshaller, pNetworkIO, pUnmarshaller, null);
+	}
 	/**
 	 * @param pMarshaller
 	 * @param pNetworkIO
