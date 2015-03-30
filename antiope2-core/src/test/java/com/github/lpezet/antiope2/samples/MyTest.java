@@ -82,7 +82,7 @@ public class MyTest {
 		
 		MyRequest oRequest = new MyRequest();
 		oRequest.setIP("75.179.140.18");
-		oClient.ask(oRequest);
+		oClient.ask(oRequest); // warm up
 		for (int i = 0; i < 1000; i++) {
 			oClient.ask(oRequest);
 		}
