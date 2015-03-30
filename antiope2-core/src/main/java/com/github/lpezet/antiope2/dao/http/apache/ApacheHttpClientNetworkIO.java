@@ -3,6 +3,8 @@
  */
 package com.github.lpezet.antiope2.dao.http.apache;
 
+import org.apache.http.client.HttpClient;
+
 import com.github.lpezet.antiope2.dao.INetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpNetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
@@ -17,6 +19,10 @@ public class ApacheHttpClientNetworkIO  implements IHttpNetworkIO<IHttpRequest, 
 	private IApacheHttpClientMarshaller mApacheMarshaller;
 	private IApacheHttpClientUnmarshaller mApacheUnmarshaller;
 	private INetworkIO<ApacheHttpRequest, ApacheHttpResponse> mApacheNIO;
+	
+	public ApacheHttpClientNetworkIO(HttpClient pHttpClient) {
+		this(new ApacheHttpClientMarshaller(), new ApacheHttpClient(pHttpClient), new ApacheHttpClientUnmarshaller());
+	}
 	
 	public ApacheHttpClientNetworkIO(IApacheHttpClientMarshaller pMarshaller, INetworkIO<ApacheHttpRequest, ApacheHttpResponse> pNIO, IApacheHttpClientUnmarshaller pUnmarshaller) {
 		mApacheMarshaller = pMarshaller;
