@@ -18,19 +18,14 @@ import com.github.lpezet.antiope2.samples.internal.MyResponseUnmarshaller;
  */
 public class MyClient implements IMyClient {
 
-	private IHttpNetworkIO<IHttpRequest, IHttpResponse> mNetworkIO;
-	
 	private MyIO<MyRequest, MyResponse> mAskIO;
-	private IMetricsCollector mMetricsCollector;
 	
 	public MyClient(IHttpNetworkIO<IHttpRequest, IHttpResponse> pNetworkIO, IMetricsCollector pMetricsCollector) {
-		mNetworkIO = pNetworkIO;
-		mMetricsCollector = pMetricsCollector;
-		setupIOs();
+		setupIOs(pNetworkIO, pMetricsCollector);
 	}
 	
-	private void setupIOs() {
-		mAskIO = new MyIO<MyRequest, MyResponse>(new MyRequestMarshaller(mMetricsCollector), mNetworkIO, new MyResponseUnmarshaller());
+	private void setupIOs(IHttpNetworkIO<IHttpRequest,IHttpResponse> pNetworkIO, IMetricsCollector pMetricsCollector) {
+		mAskIO = new MyIO<MyRequest, MyResponse>(new MyRequestMarshaller(pMetricsCollector), pNetworkIO, new MyResponseUnmarshaller());
 	}
 
 	public MyResponse ask(MyRequest pRequest) throws Exception {
