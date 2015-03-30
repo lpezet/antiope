@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.github.lpezet.antiope2;
+package com.github.lpezet.antiope2.samples;
 
 import com.github.lpezet.antiope2.dao.http.IHttpNetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
