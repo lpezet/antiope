@@ -16,10 +16,7 @@ import org.junit.Test;
 
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.dao.http.IHttpResponse;
-import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClient;
-import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientMarshaller;
 import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientNetworkIO;
-import com.github.lpezet.antiope2.dao.http.apache.ApacheHttpClientUnmarshaller;
 import com.github.lpezet.antiope2.metrics.IMetrics;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
 import com.github.lpezet.antiope2.metrics.LogMetricsCollector;
@@ -53,11 +50,7 @@ public class MyTest {
 	}
 
 	private ApacheHttpClientNetworkIO createApacheHttpClient(HttpClient pHttpClient) {
-		ApacheHttpClient oHttpClient = new ApacheHttpClient(pHttpClient);
-		ApacheHttpClientMarshaller oMarshaller = new ApacheHttpClientMarshaller();
-		ApacheHttpClientUnmarshaller oUnmarshaller = new ApacheHttpClientUnmarshaller();
-		ApacheHttpClientNetworkIO oIO = new ApacheHttpClientNetworkIO(oMarshaller, oHttpClient, oUnmarshaller);
-		return oIO;
+		return new ApacheHttpClientNetworkIO(pHttpClient);
 	}
 
 	@Test
