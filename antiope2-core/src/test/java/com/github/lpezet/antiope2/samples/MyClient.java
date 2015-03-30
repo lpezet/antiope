@@ -16,7 +16,7 @@ import com.github.lpezet.antiope2.samples.internal.MyResponseUnmarshaller;
  * @author Luc Pezet
  *
  */
-public class MyClient {
+public class MyClient implements IMyClient {
 
 	private IHttpNetworkIO<IHttpRequest, IHttpResponse> mNetworkIO;
 	
