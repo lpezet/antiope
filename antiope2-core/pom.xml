@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>antiope2-core</artifactId>
 	<inceptionYear>2014</inceptionYear>
+	<version>0.0.1-SNAPSHOT</version>
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
