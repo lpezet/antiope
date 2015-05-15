@@ -2,8 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>antiope2-core</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-
+	<inceptionYear>2014</inceptionYear>
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
@@ -52,6 +51,7 @@
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
+				<version>2.11</version>
 				<configuration>
 					<header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
 					<properties>
