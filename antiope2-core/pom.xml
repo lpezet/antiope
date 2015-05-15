@@ -14,6 +14,13 @@
 		<httpclient.version>4.3.2</httpclient.version>
 		<jackson.version>2.1.1</jackson.version>
 	</properties>
+	
+	<scm>
+		<connection>scm:git:ssh://git@github.com/lpezet/antiope.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/lpezet/antiope.git</developerConnection>
+		<url>https://github.com/lpezet/antiope</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<repositories>
 		<repository>
@@ -39,6 +46,60 @@
 			</releases>
 		</repository>
 	</repositories>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
+					<properties>
+						<owner>Luc Pezet</owner>
+						<year>${project.inceptionYear}</year>
+						<email>lpezet@gmail.com</email>
+					</properties>
+					<skipExistingHeaders>true</skipExistingHeaders>
+					<includes>
+						<include>src/**</include>
+					</includes>
+					<excludes>
+						<exclude>**/README</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
+					</excludes>
+				</configuration>
+				<!-- Until issue https://github.com/mycila/license-maven-plugin/issues/44 
+					is fixed. <executions> <execution> <goals> <goal>check</goal> </goals> </execution> 
+					</executions> -->
+			</plugin>
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>license-maven-plugin</artifactId> 
+				<version>1.7</version> <configuration> <licenseName>mit</licenseName> <inceptionYear>${project.inceptionYear}</inceptionYear> 
+				<organizationName>Luc Pezet</organizationName> <projectName>Antiope</projectName> 
+				<ignoreTag>// %%Ignore-License</ignoreTag> </configuration> <executions> 
+				<execution> <id>check-file-header</id> <goals> <goal>check-file-header</goal> 
+				</goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>ianal-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify-legal-files</goal>
+						</goals>
+						<configuration>
+							<strict>false</strict>
+							<searchPaths>
+								<searchPath>meta-inf</searchPath>
+								<searchPath>META-INF</searchPath>
+							</searchPaths>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<!-- 
