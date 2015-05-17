@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>antiope2-core</artifactId>
 	<inceptionYear>2014</inceptionYear>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
@@ -18,7 +18,7 @@
 		<connection>scm:git:ssh://git@github.com/lpezet/antiope.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/lpezet/antiope.git</developerConnection>
 		<url>https://github.com/lpezet/antiope</url>
-		<tag>antiope2-core-0.0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<repositories>
