@@ -47,7 +47,7 @@ public final class HttpNetworkIOs {
 			}
 			@Override
 			protected void postPerform(IHttpRequest pRequest, IHttpResponse pResponse) {
-				pResponse.close();
+				if (pResponse != null) pResponse.close();
 			}
 		};
 	}
