@@ -194,7 +194,7 @@ public class HttpRequest implements IHttpRequest {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(getHttpMethod()).append(" ");
-        builder.append(getEndpoint()).append(" ");
+        if (getEndpoint() != null) builder.append(getEndpoint()).append(" ");
         String resourcePath = getResourcePath();
 
         if (resourcePath == null) {
