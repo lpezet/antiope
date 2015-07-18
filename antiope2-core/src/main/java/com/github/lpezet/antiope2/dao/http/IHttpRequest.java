@@ -106,7 +106,7 @@ public interface IHttpRequest extends IHttpBase, IExecutionContextAware {
 	 * 
 	 * @return The HTTP method to use when sending this request.
 	 */
-    public HttpMethodName getHttpMethod();
+    public String getHttpMethod();
 
 	/**
 	 * Sets the HTTP method (GET, POST, etc) to use when sending this request.
@@ -114,7 +114,7 @@ public interface IHttpRequest extends IHttpBase, IExecutionContextAware {
 	 * @param httpMethod
 	 *            The HTTP method to use when sending this request.
 	 */
-    public void setHttpMethod(HttpMethodName httpMethod);
+    public void setHttpMethod(String httpMethod);
 
     /**
      * Returns the name of the Amazon service this request is for.

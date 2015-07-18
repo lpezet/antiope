@@ -127,7 +127,7 @@ public class HttpUtils {
     }
 
     public static boolean usePayloadForQueryParameters(IHttpRequest request) {
-        boolean requestIsPOST = HttpMethodName.POST.equals(request.getHttpMethod());
+        boolean requestIsPOST = HttpMethodName.POST.name().equalsIgnoreCase(request.getHttpMethod());
         boolean requestHasNoPayload = (request.getContent() == null);
 
         return requestIsPOST && requestHasNoPayload;

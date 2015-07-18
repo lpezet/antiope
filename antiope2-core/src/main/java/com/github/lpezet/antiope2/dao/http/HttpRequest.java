@@ -52,7 +52,7 @@ public class HttpRequest implements IHttpRequest {
     //private final T originalRequest;
 
     /** The HTTP method to use when sending this request. */
-    private HttpMethodName httpMethod = HttpMethodName.POST;
+    private String httpMethod = HttpMethodName.POST.name();
 
     /** An optional stream from which to read the request payload. */
     private InputStream content;
@@ -139,12 +139,16 @@ public class HttpRequest implements IHttpRequest {
         return this;
     }
 
-    public HttpMethodName getHttpMethod() {
+    public String getHttpMethod() {
         return httpMethod;
     }
 
-    public void setHttpMethod(HttpMethodName httpMethod) {
+    public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
+    }
+    
+    public void setHttpMethod(HttpMethodName pName) {
+    	this.httpMethod = pName.name();
     }
 
     public void setEndpoint(URI endpoint) {

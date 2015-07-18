@@ -93,14 +93,14 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 		 * we'll put them in the POST request's payload.
 		 */
 		boolean oRequestHasNoPayload = pSource.getContent() == null;
-		boolean oRequestIsPost = pSource.getHttpMethod() == HttpMethodName.POST;
+		boolean oRequestIsPost = HttpMethodName.POST.name().equalsIgnoreCase( pSource.getHttpMethod() );
 		boolean oPutParamsInUri = !oRequestIsPost || oRequestHasNoPayload;
 		if (oEncodedParams != null && oPutParamsInUri) {
 			oUri += QMARK + oEncodedParams;
 		}
 
 		HttpRequestBase oHttpRequest;
-		if (pSource.getHttpMethod() == HttpMethodName.POST) {
+		if (HttpMethodName.POST.name().equalsIgnoreCase( pSource.getHttpMethod() )) {
 			HttpPost oPostMethod = new HttpPost(oUri);
 
 			/*
@@ -116,7 +116,7 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 				oPostMethod.setEntity(new RepeatableInputStreamRequestEntity( pSource ));
 			}
 			oHttpRequest = oPostMethod;
-		} else if (pSource.getHttpMethod() == HttpMethodName.PUT) {
+		} else if (HttpMethodName.PUT.name().equalsIgnoreCase( pSource.getHttpMethod() )) {
 			HttpPut putMethod = new HttpPut(oUri);
 			
 			/*
@@ -140,11 +140,11 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 			}
 			
 			oHttpRequest = putMethod;
-		} else if (pSource.getHttpMethod() == HttpMethodName.GET) {
+		} else if (HttpMethodName.GET.name().equalsIgnoreCase( pSource.getHttpMethod() )) {
 			oHttpRequest = new HttpGet(oUri);
-		} else if (pSource.getHttpMethod() == HttpMethodName.DELETE) {
+		} else if (HttpMethodName.DELETE.name().equalsIgnoreCase( pSource.getHttpMethod() )) {
 			oHttpRequest = new HttpDelete(oUri);
-		} else if (pSource.getHttpMethod() == HttpMethodName.HEAD) {
+		} else if (HttpMethodName.HEAD.name().equalsIgnoreCase( pSource.getHttpMethod() )) {
 			oHttpRequest = new HttpHead(oUri);
 		} else {
 			throw new APIClientException("Unknown HTTP method name: " + pSource.getHttpMethod());
