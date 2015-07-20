@@ -23,7 +23,7 @@
 package com.github.lpezet.antiope2.dao.http;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.lpezet.antiope2.dao.ExecutionContext;
@@ -32,14 +32,16 @@ import com.github.lpezet.antiope2.dao.ExecutionContext;
  * @author Luc Pezet
  *
  */
-public class HttpResponse implements IHttpResponse {
+public class HttpResponse extends HttpBase implements IHttpResponse {
 	
+	private static final String	HEADER_CONTENT_LENGTH	= "Content-Length";
+	private static final String	HEADER_CONTENT_TYPE	= "Content-Type";
+
 	private final IHttpRequest mHttpRequest;
 
 	private String mStatusText;
 	private int mStatusCode;
 	private InputStream mContent;
-	private Map<String, String> mHeader = new HashMap<String, String>();
 	private ExecutionContext mExecutionContext;
 
 	/**
@@ -52,6 +54,22 @@ public class HttpResponse implements IHttpResponse {
 	 */
 	public HttpResponse(IHttpRequest pRequest) {
 		mHttpRequest = pRequest;
+	}
+	
+	@Override
+	public long getContentLength() {
+		String v = getFirstHeaderValue(HEADER_CONTENT_LENGTH);
+		if (v == null) return 0;
+		try {
+			return Long.parseLong( v );
+		} catch (Throwable e) {
+			return 0;
+		}
+	}
+	
+	@Override
+	public String getContentType() {
+		return getFirstHeaderValue(HEADER_CONTENT_TYPE);
 	}
 
 	/**
@@ -70,27 +88,6 @@ public class HttpResponse implements IHttpResponse {
 	 */
 	public IHttpRequest getHttpRequest() {
 		return mHttpRequest;
-	}
-
-	/**
-	 * Returns the HTTP headers returned with this response.
-	 * 
-	 * @return The set of HTTP headers returned with this HTTP response.
-	 */
-	public Map<String, String> getHeaders() {
-		return mHeader;
-	}
-
-	/**
-	 * Adds an HTTP header to the set associated with this response.
-	 * 
-	 * @param name
-	 *            The name of the HTTP header.
-	 * @param value
-	 *            The value of the HTTP header.
-	 */
-	public void addHeader(String name, String value) {
-		mHeader.put(name, value);
 	}
 
 	/**
@@ -151,11 +148,6 @@ public class HttpResponse implements IHttpResponse {
 	 */
 	public int getStatusCode() {
 		return mStatusCode;
-	}
-
-	@Override
-	public void setHeaders(Map<String, String> pHeaders) {
-		mHeader = pHeaders;
 	}
 
 	@Override

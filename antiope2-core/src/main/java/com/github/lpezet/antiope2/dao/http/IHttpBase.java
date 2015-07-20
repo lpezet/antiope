@@ -23,6 +23,7 @@
 package com.github.lpezet.antiope2.dao.http;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +46,11 @@ public interface IHttpBase {
      *
      * @return A map of all the headers included in this request.
      */
-    public Map<String, String> getHeaders();
+    public List<Header> getHeaders();
+    
+    public String getFirstHeaderValue(String pName);
+    
+    public String getLastHeaderValue(String pName);
     
     /**
      * Sets all headers, clearing any existing ones.

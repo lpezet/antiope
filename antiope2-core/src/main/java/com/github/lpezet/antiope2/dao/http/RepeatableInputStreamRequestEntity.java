@@ -75,7 +75,7 @@ public class RepeatableInputStreamRequestEntity  extends BasicHttpEntity {
          */
         long contentLength = -1;
         try {
-            String contentLengthString = request.getHeaders().get("Content-Length");
+            String contentLengthString = request.getFirstHeaderValue("Content-Length");
             if (contentLengthString != null) {
                 contentLength = Long.parseLong(contentLengthString);
             }
@@ -84,7 +84,7 @@ public class RepeatableInputStreamRequestEntity  extends BasicHttpEntity {
             		"Buffering contents in memory.");
         }
 
-        String contentType = request.getHeaders().get("Content-Type");
+        String contentType = request.getFirstHeaderValue("Content-Type");
         /*
         ThroughputMetricType type = ServiceMetricTypeGuesser
                 .guessThroughputMetricType(request,

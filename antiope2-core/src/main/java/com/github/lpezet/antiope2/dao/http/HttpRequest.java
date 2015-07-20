@@ -16,8 +16,10 @@ package com.github.lpezet.antiope2.dao.http;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.http.annotation.NotThreadSafe;
 
@@ -28,17 +30,15 @@ import com.github.lpezet.antiope2.dao.ExecutionContext;
  *
  */
 @NotThreadSafe
-public class HttpRequest implements IHttpRequest {
+public class HttpRequest extends HttpBase implements IHttpRequest {
 
 	/** The resource path being requested */
     private String resourcePath;
 
     /** Map of the parameters being sent as part of this request */
-    private Map<String, String> parameters = new LinkedHashMap<String, String>();
+    private List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 
-    /** Map of the headers included in this request */
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
-
+    
     /** The service endpoint to which this request should be sent */
     private URI endpoint;
 
@@ -110,14 +110,6 @@ public class HttpRequest implements IHttpRequest {
     //    return originalRequest;
     //}
 
-    public void addHeader(String name, String value) {
-        headers.put(name, value);
-    }
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
     public void setResourcePath(String resourcePath) {
         this.resourcePath = resourcePath;
     }
@@ -127,10 +119,10 @@ public class HttpRequest implements IHttpRequest {
     }
 
     public void addParameter(String name, String value) {
-        parameters.put(name, value);
+        parameters.add(new BasicNameValuePair(name, value));
     }
 
-    public Map<String, String> getParameters() {
+    public List<NameValuePair> getParameters() {
         return parameters;
     }
 
@@ -171,14 +163,11 @@ public class HttpRequest implements IHttpRequest {
         this.content = content;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers.clear();
-        this.headers.putAll(headers);
-    }
-
     public void setParameters(Map<String, String> parameters) {
         this.parameters.clear();
-        this.parameters.putAll(parameters);
+        for (Entry<String, String> e : parameters.entrySet()) {
+        	addParameter(e.getKey(), e.getValue());
+        }
     }
     
     public int getTimeOffset() {
@@ -210,25 +199,24 @@ public class HttpRequest implements IHttpRequest {
             }
             builder.append(resourcePath);
         }
-        builder.append(" ");
-        if (!getParameters().isEmpty()) {
-            builder.append("Parameters: (");
-            for (String key : getParameters().keySet()) {
-                String value = getParameters().get(key);
-                builder.append(key).append(": ").append(value).append(", ");
-            }
-            builder.append(") ");
-        }
-
+        
         if (!getHeaders().isEmpty()) {
-            builder.append("Headers: (");
-            for (String key : getHeaders().keySet()) {
-                String value = getHeaders().get(key);
-                builder.append(key).append(": ").append(value).append(", ");
+        	builder.append("\n");
+            //builder.append("Headers: (");
+            for (Header h : getHeaders()) {
+            	builder.append(h.getName()).append(": ").append(h.getValue()).append("\n");
             }
             builder.append(") ");
         }
-
+        if (!getParameters().isEmpty()) {
+        	builder.append("\n");
+            //builder.append("Parameters: (");
+            for (NameValuePair oNVP : getParameters()) {
+            	builder.append(oNVP.getName()).append("=").append(oNVP.getValue()).append("&");
+            }
+            
+        }
+        builder.append("\n");
         return builder.toString();
     }
     

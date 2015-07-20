@@ -25,7 +25,6 @@ package com.github.lpezet.antiope2.dao.http.apache;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.Map.Entry;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpDelete;
@@ -43,6 +42,7 @@ import org.apache.http.protocol.HttpContext;
 import com.github.lpezet.antiope2.APIClientException;
 import com.github.lpezet.antiope2.be.IAPIConfiguration;
 import com.github.lpezet.antiope2.dao.ExecutionContext;
+import com.github.lpezet.antiope2.dao.http.Header;
 import com.github.lpezet.antiope2.dao.http.HttpExecutionContext;
 import com.github.lpezet.antiope2.dao.http.HttpMethodName;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
@@ -133,7 +133,7 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 			//} else 
 			if (pSource.getContent() != null) {
 				HttpEntity entity = new RepeatableInputStreamRequestEntity( pSource );
-				if (pSource.getHeaders().get(CONTENT_LENGTH) == null) {
+				if (pSource.getFirstHeaderValue(CONTENT_LENGTH) == null) {
 					entity = newBufferedHttpEntity(entity);
 				}
 				putMethod.setEntity( entity );
@@ -190,16 +190,16 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 		pHttpRequest.addHeader(HOST, hostHeader);
 
 		// Copy over any other headers already in our request
-		for (Entry<String, String> entry : pRequest.getHeaders().entrySet()) {
+		for (Header h : pRequest.getHeaders()) {
 			/*
 			 * HttpClient4 fills in the Content-Length header and complains if
 			 * it's already present, so we skip it here. We also skip the Host
 			 * header to avoid sending it twice, which will interfere with some
 			 * signing schemes.
 			 */
-			if (entry.getKey().equalsIgnoreCase(CONTENT_LENGTH) || entry.getKey().equalsIgnoreCase(HOST)) continue;
+			if (h.getName().equalsIgnoreCase(CONTENT_LENGTH) || h.getName().equalsIgnoreCase(HOST)) continue;
 
-			pHttpRequest.addHeader(entry.getKey(), entry.getValue());
+			pHttpRequest.addHeader(h.getName(), h.getValue());
 		}
 
 		/* Set content type and encoding */

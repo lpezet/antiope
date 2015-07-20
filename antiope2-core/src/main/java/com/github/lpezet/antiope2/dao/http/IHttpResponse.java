@@ -38,6 +38,20 @@ public interface IHttpResponse extends IHttpBase, IExecutionContextAware {
 	//public HttpRequestBase getHttpRequest();
 	public IHttpRequest getHttpRequest();
 	
+	/**
+	 * Shortcut.
+	 * 
+	 * @return Content length value as found in headers. 0 if not found.
+	 */
+	public long getContentLength();
+	
+	/**
+	 * Shortcut.
+	 * 
+	 * @return Content type as found in headers. Null if not found.
+	 */
+	public String getContentType();
+	
 	
 	/**
 	 * Sets the HTTP status text returned with this response.

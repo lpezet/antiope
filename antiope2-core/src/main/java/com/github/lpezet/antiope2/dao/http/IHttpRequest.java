@@ -23,6 +23,7 @@
 package com.github.lpezet.antiope2.dao.http;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import com.github.lpezet.antiope2.dao.IExecutionContextAware;
@@ -77,7 +78,7 @@ public interface IHttpRequest extends IHttpBase, IExecutionContextAware {
      *
      * @return A map of all parameters in this request.
      */
-    public Map<String, String> getParameters();
+    public List<NameValuePair> getParameters();
     
     /**
      * Sets all parameters, clearing any existing values.
