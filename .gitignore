@@ -10,3 +10,4 @@ bak
 .lock
 .log
 version.ini
+.DS_Store
