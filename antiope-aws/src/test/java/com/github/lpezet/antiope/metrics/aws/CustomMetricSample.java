@@ -102,7 +102,7 @@ public class CustomMetricSample extends BaseSample {
 				oMetrics.startEvent(APIRequestMetrics.RequestMarshallTime);
 				try {
 					oMetrics.addProperty(MyCustonMetric.TotalResultsRequested, 10);
-					oRequest = new DefaultRequest(oMyRequest, "GetIt2");
+					oRequest = new DefaultRequest<MyRequest>(oMyRequest, "GetIt2");
 					oRequest.setHttpMethod(HttpMethodName.GET);
 					oRequest.setResourcePath("/json/");
 					oRequest.setMetrics(oMetrics);
