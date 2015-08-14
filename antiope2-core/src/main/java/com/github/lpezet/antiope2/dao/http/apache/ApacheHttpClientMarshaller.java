@@ -71,6 +71,7 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 		ApacheHttpRequest oResult = new ApacheHttpRequest();
 		HttpContext oHttpContext = HttpClientContext.create();
 		oResult.setHttpContext(oHttpContext);
+		oResult.setOriginalHttpRequest( pSource );
 		
 		ExecutionContext oExecutionContext = pSource.getExecutionContext();
 		oResult.setExecutionContext(oExecutionContext);

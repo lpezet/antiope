@@ -68,7 +68,6 @@ public class ApacheHttpClientUnmarshaller implements IApacheHttpClientUnmarshall
 	public IHttpResponse perform(ApacheHttpResponse pResponse) throws Exception {
 		HttpResponse oResponse = new HttpResponseWrapper(pResponse.getRequest(), pResponse.getHttpResponse());
 		oResponse.setExecutionContext(pResponse.getExecutionContext());
-		
 		org.apache.http.HttpResponse oApacheHttpResponse = pResponse.getHttpResponse();
 		if (oApacheHttpResponse != null) {
 			if (oApacheHttpResponse.getEntity() != null) {
