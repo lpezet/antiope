@@ -15,6 +15,7 @@ import com.github.lpezet.antiope2.dao.http.HttpExecutionContext;
 import com.github.lpezet.antiope2.dao.http.IHttpNetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.dao.http.IHttpResponse;
+import com.github.lpezet.antiope2.dao.http.Signer;
 import com.github.lpezet.antiope2.metrics.BaseMetrics;
 import com.github.lpezet.antiope2.metrics.IMetrics;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
@@ -36,8 +37,10 @@ public class RestHandler implements InvocationHandler {
 	private final AsyncWorker<IHttpRequest, IHttpResponse>		mAsyncIO;
 	private final ExecutorService								mExecutorService;
 	private final IMetricsCollector								mMetricsCollector;
+	private final Signer										mSigner;
 	private RxSupport											mRxSupport;
-
+	private final RequestInterceptor							mRequestInterceptor;
+	
 	RestHandler(
 			String pEndpoint,
 			IHttpNetworkIO<IHttpRequest, IHttpResponse> pIO,
@@ -45,7 +48,9 @@ public class RestHandler implements InvocationHandler {
 			ExecutorService pExecutorService,
 			Converter pDefaultConverter,
 			Map<Method, MethodInfo> pMethodDetailsCache,
-			ErrorHandler pErrorHandler) {
+			ErrorHandler pErrorHandler,
+			Signer pSigner,
+			RequestInterceptor pRequestInterceptor) {
 		mEndpoint = pEndpoint;
 		mMetricsCollector = pMetricsCollector;
 		mDefaultConverter = pDefaultConverter;
@@ -54,6 +59,8 @@ public class RestHandler implements InvocationHandler {
 		mIO = pIO;
 		mAsyncIO = new AsyncWorker<IHttpRequest, IHttpResponse>(pExecutorService, pIO);
 		mExecutorService = pExecutorService;
+		mSigner = pSigner;
+		mRequestInterceptor = pRequestInterceptor;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -195,6 +202,7 @@ public class RestHandler implements InvocationHandler {
 	private Object invokeSync(MethodInfo pMethodInfo, IHttpRequest pRequest) throws Throwable {
 		try {
 			IHttpResponse response = mIO.perform(pRequest);
+			//pRequest.clear(); //TODO????
 			return createResult(pMethodInfo, response);
 		} catch (IOException e) {
 			throw handleError(AntiopeError.networkFailure(pRequest, e));
@@ -219,6 +227,8 @@ public class RestHandler implements InvocationHandler {
 			throw AntiopeError.networkError(response, e);
 		} catch (Throwable t) {
 			throw AntiopeError.unexpectedError(response, t);
+		} finally {
+			response.close();
 		}
 	}
 
@@ -264,6 +274,7 @@ public class RestHandler implements InvocationHandler {
 
 		// ExceptionCatchingRequestBody wrapped = new ExceptionCatchingRequestBody(body);
 		try {
+			//TODO: free memory from response (and request within it)
 			return oConverter.deserialize(body, type);
 		} catch (RuntimeException e) {
 			// If the underlying input stream threw an exception, propagate that rather than
@@ -299,10 +310,13 @@ public class RestHandler implements InvocationHandler {
 		// Very Antiope2 specific
 		IMetrics oMetrics = new BaseMetrics();
 		HttpExecutionContext oContext = new HttpExecutionContext(oMetrics, mMetricsCollector);
+		oContext.setSigner( mSigner );
 
-		RequestBuilder requestBuilder = new RequestBuilder(mEndpoint, pMethodInfo, getConverter(pMethodInfo), oContext);
-		requestBuilder.setArguments(pArgs);
-		return requestBuilder.build();
+		RequestBuilder oRequestBuilder = new RequestBuilder(mEndpoint, pMethodInfo, getConverter(pMethodInfo), oContext);
+		oRequestBuilder.setArguments(pArgs);
+		
+		mRequestInterceptor.intercept( oRequestBuilder );
+		return oRequestBuilder.build();
 	}
 
 	private Converter getConverter(MethodInfo pMethodInfo) {

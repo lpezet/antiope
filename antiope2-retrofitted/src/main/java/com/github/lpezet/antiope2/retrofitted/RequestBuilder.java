@@ -36,7 +36,7 @@ import com.github.lpezet.antiope2.util.StringUtils;
  * @author Luc Pezet
  *
  */
-public class RequestBuilder {
+public class RequestBuilder implements RequestFacade {
 	
 	private Logger mLogger = LoggerFactory.getLogger(this.getClass());
 	private MethodInfo mMethodInfo;
@@ -274,7 +274,12 @@ public class RequestBuilder {
 		}
 	}
 	
-	private void addQueryParam(String name, Object value, String pValueTemplate, boolean encodeName, boolean encodeValue) {
+	@Override
+	public void addQueryParam(String pName, Object pValue) {
+		addQueryParam(pName, pValue, null, true, true);
+	}
+	
+	public void addQueryParam(String name, Object value, String pValueTemplate, boolean encodeName, boolean encodeValue) {
 		if (value instanceof Iterable) {
 			for (Object iterableValue : (Iterable<?>) value) {
 				if (iterableValue != null) { // Skip null values
@@ -339,7 +344,7 @@ public class RequestBuilder {
 		return pValueTemplate.replace("{}", pValue);
 	}
 
-	private void addPathParam(String pName, String pValue, boolean pUrlEncodeValue) {
+	public void addPathParam(String pName, String pValue, boolean pUrlEncodeValue) {
 		mLogger.info("addPathParam(" + pName + ", " + pValue + ", " + pUrlEncodeValue + ")");
 		if (pName == null) {
 			throw new IllegalArgumentException("Path replacement name must not be null.");
@@ -369,7 +374,7 @@ public class RequestBuilder {
 		HttpRequest oRequest = new HttpRequest(mEndpointUri);
 		oRequest.setExecutionContext(mExecutionContext);
 		oRequest.setContent( mRequestBody );
-		oRequest.setEndpoint(new URI( mEndpointUri ));
+		oRequest.setEndpoint( URI.create( mEndpointUri ) );
 		for (com.github.lpezet.antiope2.dao.http.Header e : mHeaders.getAllHeaders()) {
 			oRequest.addHeader( e.getName(), e.getValue() );
 		}

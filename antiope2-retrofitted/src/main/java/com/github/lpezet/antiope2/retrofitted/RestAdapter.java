@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import com.github.lpezet.antiope2.dao.http.IHttpNetworkIO;
 import com.github.lpezet.antiope2.dao.http.IHttpRequest;
 import com.github.lpezet.antiope2.dao.http.IHttpResponse;
+import com.github.lpezet.antiope2.dao.http.Signer;
+import com.github.lpezet.antiope2.dao.http.StubSigner;
 import com.github.lpezet.antiope2.metrics.IMetricsCollector;
 import com.github.lpezet.antiope2.metrics.StubMetricsCollector;
 import com.github.lpezet.antiope2.retrofitted.converter.Converter;
@@ -24,24 +26,27 @@ import com.github.lpezet.antiope2.retrofitted.converter.Converter;
  */
 public class RestAdapter {
 
-	private final Map<Class<?>, Map<Method, MethodInfo>>	serviceMethodInfoCache	= new LinkedHashMap<Class<?>, Map<Method, MethodInfo>>();
+	private final Map<Class<?>, Map<Method, MethodInfo>>		serviceMethodInfoCache	= new LinkedHashMap<Class<?>, Map<Method, MethodInfo>>();
 
-	private String											mEndpoint;
-	private IHttpNetworkIO<IHttpRequest, IHttpResponse>		mNetworkIO;
+	private final String										mEndpoint;
+	private final IHttpNetworkIO<IHttpRequest, IHttpResponse>	mNetworkIO;
 	// private Executor mCallbackExecutor;
-	private ExecutorService									mExecutorService;
-	private Converter										mConverter;
-	private ErrorHandler									mErrorHandler;
-	private IMetricsCollector								mMetricsCollector;
+	private final ExecutorService								mExecutorService;
+	private final Converter										mConverter;
+	private final ErrorHandler									mErrorHandler;
+	private IMetricsCollector									mMetricsCollector;
+	private final Signer										mSigner;
+	private final RequestInterceptor							mRequestInterceptor;
 
-	private RestAdapter(String endpoint, IHttpNetworkIO pNetworkIO, ExecutorService executorService, Converter converter, ErrorHandler errorHandler) {
+	private RestAdapter(String endpoint, IHttpNetworkIO pNetworkIO, ExecutorService executorService, Converter converter, ErrorHandler errorHandler, Signer pSigner, RequestInterceptor pRequestInterceptor) {
 		mEndpoint = endpoint;
 		mNetworkIO = pNetworkIO;
 		// mCallbackExecutor = callbackExecutor;
 		mConverter = converter;
 		mErrorHandler = errorHandler;
 		mExecutorService = executorService;
-
+		mSigner = pSigner;
+		mRequestInterceptor = pRequestInterceptor;
 	}
 
 	/** Create an implementation of the API defined by the specified {@code service} interface. */
@@ -49,7 +54,7 @@ public class RestAdapter {
 	public <T> T create(Class<T> service) {
 		Utils.validateServiceClass(service);
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service },
-				new RestHandler(mEndpoint, mNetworkIO, mMetricsCollector, mExecutorService, mConverter, getMethodInfoCache(service), mErrorHandler));
+				new RestHandler(mEndpoint, mNetworkIO, mMetricsCollector, mExecutorService, mConverter, getMethodInfoCache(service), mErrorHandler, mSigner, mRequestInterceptor));
 	}
 
 	Map<Method, MethodInfo> getMethodInfoCache(Class<?> service) {
@@ -81,14 +86,16 @@ public class RestAdapter {
 	 * optional.
 	 */
 	public static class Builder {
-		private String			endpoint;
-		private IHttpNetworkIO	client;
-		//private Executor		callbackExecutor;
-		private ExecutorService executorService;
-		private Converter		converter;
-		private ErrorHandler	errorHandler;
-		private IMetricsCollector metricsCollector;
-		
+		private String				endpoint;
+		private IHttpNetworkIO		client;
+		// private Executor callbackExecutor;
+		private ExecutorService		executorService;
+		private Converter			converter;
+		private ErrorHandler		errorHandler;
+		private IMetricsCollector	metricsCollector;
+		private Signer				signer;
+		private RequestInterceptor 	requestInterceptor;
+
 		/** API endpoint URL. */
 		public Builder endpoint(String url) {
 			this.endpoint = checkNotNull(url, "endpoint == null");
@@ -100,9 +107,14 @@ public class RestAdapter {
 			this.client = checkNotNull(client, "client == null");
 			return this;
 		}
-		
+
 		public Builder metricsCollector(IMetricsCollector pMetricsCollector) {
 			metricsCollector = pMetricsCollector;
+			return this;
+		}
+		
+		public Builder requestInterceptor(RequestInterceptor pInterceptor) {
+			requestInterceptor = pInterceptor;
 			return this;
 		}
 
@@ -111,18 +123,19 @@ public class RestAdapter {
 		 * {@code null} then callback methods will be run on the same thread as the HTTP client.
 		 */
 		/*
-		public Builder callbackExecutor(Executor callbackExecutor) {
-			if (callbackExecutor == null) {
-				callbackExecutor = new Utils.SynchronousExecutor();
-			}
-			this.callbackExecutor = callbackExecutor;
-			return this;
-		}
-	*/
+		 * public Builder callbackExecutor(Executor callbackExecutor) {
+		 * if (callbackExecutor == null) {
+		 * callbackExecutor = new Utils.SynchronousExecutor();
+		 * }
+		 * this.callbackExecutor = callbackExecutor;
+		 * return this;
+		 * }
+		 */
 		public Builder executorService(ExecutorService executorService) {
 			this.executorService = executorService;
 			return this;
 		}
+
 		/** The converter used for serialization and deserialization of objects. */
 		public Builder converter(Converter converter) {
 			this.converter = checkNotNull(converter, "converter == null");
@@ -142,7 +155,7 @@ public class RestAdapter {
 		public RestAdapter build() {
 			checkNotNull(endpoint, "Endpoint required.");
 			ensureSaneDefaults();
-			return new RestAdapter(endpoint, client, executorService, converter, errorHandler);
+			return new RestAdapter(endpoint, client, executorService, converter, errorHandler, signer, requestInterceptor);
 		}
 
 		private void ensureSaneDefaults() {
@@ -152,14 +165,20 @@ public class RestAdapter {
 			if (client == null) {
 				client = Platform.get().defaultClient();
 			}
-			//if (callbackExecutor == null) {
-			//	callbackExecutor = Platform.get().defaultCallbackExecutor();
-			//}
+			if (signer == null) {
+				signer = new StubSigner();
+			}
+			if (requestInterceptor == null) {
+				requestInterceptor = RequestInterceptor.NOP_INTERCEPTOR;
+			}
+			// if (callbackExecutor == null) {
+			// callbackExecutor = Platform.get().defaultCallbackExecutor();
+			// }
 			if (metricsCollector == null) {
 				metricsCollector = new StubMetricsCollector();
 			}
 			if (executorService == null) {
-				//TODO: Replace by Platgorm.get().defaultExecutorService();
+				// TODO: Replace by Platgorm.get().defaultExecutorService();
 				executorService = Executors.newCachedThreadPool();
 			}
 			if (errorHandler == null) {
