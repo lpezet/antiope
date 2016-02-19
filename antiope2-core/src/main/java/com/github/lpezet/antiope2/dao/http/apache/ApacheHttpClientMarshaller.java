@@ -79,13 +79,13 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 		// Signing request if any signer.
 		if (canSign(oExecutionContext)) doSign(oExecutionContext, pSource);
 
-		URI oEndpoint = pSource.getEndpoint();
+		String oEndpoint = pSource.getEndpoint();
 		/*
 		 * HttpClient cannot handle url in pattern of "http://host//path", so we
 		 * have to escape the double-slash between endpoint and resource-path
 		 * into "/%2F"
 		 */
-		String oUri = HttpUtils.appendUri(oEndpoint.toString(), pSource.getResourcePath(), true);
+		String oUri = HttpUtils.appendUri(oEndpoint, pSource.getResourcePath(), true);
 		String oEncodedParams = HttpUtils.encodeParameters(pSource.getParameters());
 
 		/*
@@ -183,11 +183,13 @@ public class ApacheHttpClientMarshaller implements IApacheHttpClientMarshaller {
 		 * and started honoring our explicit host with endpoint), we follow this
 		 * same behavior here and in the QueryString signer.
 		 */
-		URI endpoint = pRequest.getEndpoint();
-		String hostHeader = endpoint.getHost();
+		String endpoint = pRequest.getEndpoint();
+		String hostHeader = HttpUtils.getHostAndPort( endpoint ); //endpoint.getHost();
+		/*
 		if (HttpUtils.isUsingNonDefaultPort(endpoint)) {
 			hostHeader += COLON + endpoint.getPort();
 		}
+		*/
 		pHttpRequest.addHeader(HOST, hostHeader);
 
 		// Copy over any other headers already in our request

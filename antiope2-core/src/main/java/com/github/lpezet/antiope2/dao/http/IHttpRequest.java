@@ -91,7 +91,7 @@ public interface IHttpRequest extends IHttpBase, IExecutionContextAware {
      *
      * @return The service endpoint to which this request should be sent.
      */
-    public URI getEndpoint();
+    public String getEndpoint();
 
     /**
      * Sets the service endpoint to which this request should be sent.
@@ -99,7 +99,7 @@ public interface IHttpRequest extends IHttpBase, IExecutionContextAware {
      * @param endpoint
      *            The service endpoint to which this request should be sent.
      */
-    public void setEndpoint(URI endpoint);
+    public void setEndpoint(String endpoint);
 
 	/**
 	 * Returns the HTTP method (GET, POST, etc) to use when sending this

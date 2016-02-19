@@ -40,7 +40,7 @@ public class HttpRequest extends HttpBase implements IHttpRequest {
 
     
     /** The service endpoint to which this request should be sent */
-    private URI endpoint;
+    private String endpoint;
 
     /** The name of the service to which this request is being sent */
     private String serviceName;
@@ -143,11 +143,11 @@ public class HttpRequest extends HttpBase implements IHttpRequest {
     	this.httpMethod = pName.name();
     }
 
-    public void setEndpoint(URI endpoint) {
+    public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 
-    public URI getEndpoint() {
+    public String getEndpoint() {
         return endpoint;
     }
 

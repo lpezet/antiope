@@ -35,6 +35,14 @@ import com.github.lpezet.antiope2.dao.http.IHttpRequest;
  */
 public class HttpUtils {
 
+	private static final String	ENCODED_DOUBLE_SLASH	= "/%2F";
+
+	private static final String	COLON	= ":";
+
+	private static final String	SLASH	= "/";
+
+	private static final String	DOUBLE_SLASH	= "//";
+
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
     /**
@@ -89,7 +97,7 @@ public class HttpUtils {
                 } else if ("%7E".equals(replacement)) {
                     replacement = "~";
                 } else if (path && "%2F".equals(replacement)) {
-                    replacement = "/";
+                    replacement = SLASH;
                 }
 
                 matcher.appendReplacement(buffer, replacement);
@@ -184,24 +192,57 @@ public class HttpUtils {
     public static String appendUri(final String baseUri, String path, final boolean escapeDoubleSlash ) {
         String resultUri = baseUri;
         if (path != null && path.length() > 0) {
-            if (path.startsWith("/")) {
+            if (path.startsWith(SLASH)) {
                 // trim the trailing slash in baseUri, since the path already starts with a slash
-                if (resultUri.endsWith("/")) {
+                if (resultUri.endsWith(SLASH)) {
                     resultUri = resultUri.substring(0, resultUri.length() - 1);
                 }
-            } else if (!resultUri.endsWith("/")) {
-                resultUri += "/";
+            } else if (!resultUri.endsWith(SLASH)) {
+                resultUri += SLASH;
             }
             String encodedPath = HttpUtils.urlEncode(path, true);
             if (escapeDoubleSlash) {
-                encodedPath = encodedPath.replace("//", "/%2F");
+                encodedPath = encodedPath.replace(DOUBLE_SLASH, ENCODED_DOUBLE_SLASH);
             }
             resultUri += encodedPath;
-        } else if (!resultUri.endsWith("/")) {
-            resultUri += "/";
+        } else if (!resultUri.endsWith(SLASH)) {
+            resultUri += SLASH;
         }
 
         return resultUri;
     }
+    
+    public static String getHostAndPort(String pUrl) {
+    	if (pUrl == null) return null;
+    	int oIndex = pUrl.indexOf(DOUBLE_SLASH);
+		int oSlashIndex = pUrl.indexOf(SLASH, oIndex + 2);
+		return (oSlashIndex > 0) ? pUrl.substring(oIndex + 2, oSlashIndex) : pUrl.substring(oIndex + 2);	
+    }
+    
+    public static String getScheme(String pUrl) {
+    	if (pUrl == null) return null;
+    	int oIndex = pUrl.indexOf(COLON);
+    	return pUrl.substring(0, oIndex);
+    }
+
+	public static String getHost(String pUrl) {
+		if (pUrl == null) return null;
+		String oHostAndPort = getHostAndPort(pUrl);
+		int oColonIndex = oHostAndPort.indexOf(COLON);
+		if (oColonIndex > 0) return oHostAndPort.substring(0, oColonIndex);
+		return oHostAndPort;
+	}
+
+	public static int getPort(String pUrl) {
+		if (pUrl == null) return 0;
+		String oHostAndPort = getHostAndPort(pUrl);
+		int oColonIndex = oHostAndPort.indexOf(COLON);
+		if (oColonIndex < 0) return 0;
+		try {
+			return Integer.parseInt( oHostAndPort.substring(oColonIndex + 1) );
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 
 }

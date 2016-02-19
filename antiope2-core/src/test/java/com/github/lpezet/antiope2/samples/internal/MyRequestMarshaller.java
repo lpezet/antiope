@@ -41,7 +41,7 @@ import com.github.lpezet.antiope2.samples.MyRequest;
  */
 public class MyRequestMarshaller implements IMarshaller<MyRequest, IHttpRequest> {
 	
-	private static final URI ENDPOINT = newURI("http://freegeoip.net");
+	private static final String ENDPOINT = "http://freegeoip.net";
 	private IMetricsCollector mMetricsCollector;
 	
 	public MyRequestMarshaller() {
@@ -64,14 +64,6 @@ public class MyRequestMarshaller implements IMarshaller<MyRequest, IHttpRequest>
 		oResult.setHttpMethod(HttpMethodName.GET);
 		//oResult.addHeader("toto", "titi");
 		return oResult;
-	}
-
-	private static URI newURI(String pURI) {
-		try {
-			return new URI(pURI);
-		} catch (URISyntaxException e) {
-			return null;
-		}
 	}
 
 }
