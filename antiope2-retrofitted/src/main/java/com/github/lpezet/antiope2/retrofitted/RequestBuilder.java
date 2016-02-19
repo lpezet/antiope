@@ -374,7 +374,7 @@ public class RequestBuilder implements RequestFacade {
 		HttpRequest oRequest = new HttpRequest(mEndpointUri);
 		oRequest.setExecutionContext(mExecutionContext);
 		oRequest.setContent( mRequestBody );
-		oRequest.setEndpoint( URI.create( mEndpointUri ) );
+		oRequest.setEndpoint( mEndpointUri );
 		for (com.github.lpezet.antiope2.dao.http.Header e : mHeaders.getAllHeaders()) {
 			oRequest.addHeader( e.getName(), e.getValue() );
 		}
