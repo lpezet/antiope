@@ -7,8 +7,22 @@
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.6</version>
 	</parent>
+	
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<name>Sonatype Snapshot Repo</name>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 	<properties>
 		<httpclient.version>4.3.2</httpclient.version>
@@ -16,9 +30,10 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:ssh://git@github.com/lpezet/antiope.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/lpezet/antiope.git</developerConnection>
-		<url>https://github.com/lpezet/antiope</url>
+		<connection>scm:git:git@github.com:lpezet/antiope.git</connection>
+		<url>scm:git:git@github.com:lpezet/antiope.git</url>
+		<developerConnection>scm:git:git@github.com:lpezet/antiope.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<build>

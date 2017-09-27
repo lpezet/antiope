@@ -7,29 +7,35 @@
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6</version>
 	</parent>
+	<scm>
+		<connection>scm:git:git@github.com:lpezet/antiope.git</connection>
+		<url>scm:git:git@github.com:lpezet/antiope.git</url>
+		<developerConnection>scm:git:git@github.com:lpezet/antiope.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./hd.hprof</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 	<repositories>
 		<repository>
-			<id>lpezet-snapshot</id>
-			<url>https://repository-lpezet.forge.cloudbees.com/snapshot/</url>
-			<name>LPezet Snapshot Repo</name>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<name>Sonatype Snapshot Repo</name>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>lpezet-release</id>
-			<url>https://repository-lpezet.forge.cloudbees.com/release/</url>
-			<name>LPezet Snapshot Repo</name>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
 			</releases>
 		</repository>
 	</repositories>
