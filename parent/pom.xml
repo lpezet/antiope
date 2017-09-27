@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.lpezet.antiope</groupId>
 	<artifactId>parent</artifactId>
@@ -189,7 +190,7 @@
 		</repository>
 	</repositories>
 
-  <scm>
+	<scm>
 		<connection>scm:git:git@github.com:lpezet/antiope.git</connection>
 		<url>scm:git:git@github.com:lpezet/antiope.git</url>
 		<developerConnection>scm:git:git@github.com:lpezet/antiope.git</developerConnection>
@@ -450,7 +451,7 @@
 							<goal>verify-legal-files</goal>
 						</goals>
 						<configuration>
-							<!--  fails for javadoc jars as legal files are not included somehow -->
+							<!-- fails for javadoc jars as legal files are not included somehow -->
 							<strict>false</strict>
 						</configuration>
 					</execution>
