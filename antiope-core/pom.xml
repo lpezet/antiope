@@ -3,6 +3,23 @@
 	<artifactId>antiope-core</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 	<inceptionYear>2014</inceptionYear>
+	<name>Antiope Core Module</name>
+	<description>API Client Framework</description>
+	<url>https://github.com/lpezet/antiope</url>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>lpezet</id>
+			<name>Luke Pezet</name>
+		</developer>
+	</developers>
+	
 	<parent>
 		<groupId>com.github.lpezet.antiope</groupId>
 		<artifactId>parent</artifactId>
