@@ -6,16 +6,14 @@
 	<packaging>pom</packaging>
 
 	<distributionManagement>
-		<repository>
-			<id>antiope-release</id>
-			<name>Antiope Release</name>
-			<url>dav:https://repository-antiope.forge.cloudbees.com/release/</url>
-		</repository>
 		<snapshotRepository>
-			<id>antiope-snapshot</id>
-			<name>Antiope Snapshot</name>
-			<url>dav:https://repository-antiope.forge.cloudbees.com/snapshot/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 	</distributionManagement>
 	<ciManagement>
 		<system>Jenkins</system>
@@ -54,6 +52,7 @@
 				</plugins>
 			</build>
 		</profile>
+		<!-- backward compat -->
 		<profile>
 			<id>deploy</id>
 			<build>
@@ -80,6 +79,55 @@
 								<goals>
 									<goal>jar</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<keyname>738CC4DD1606B7F74421BA729675DB9A5117DFFC</keyname>
+									<passphraseServerId>gpg.738CC4DD1606B7F74421BA729675DB9A5117DFFC</passphraseServerId>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -129,35 +177,24 @@
 
 	<repositories>
 		<repository>
-			<id>antiope-snapshot</id>
-			<url>https://repository-antiope.forge.cloudbees.com/snapshot/</url>
-			<name>Antiope Snapshot Repo</name>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<name>Sonatype Snapshot Repo</name>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>antiope-release</id>
-			<url>https://repository-antiope.forge.cloudbees.com/release/</url>
-			<name>Antiope Release Repo</name>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
 			</releases>
 		</repository>
 	</repositories>
 
-	<scm>
-		<connection>scm:git:ssh://git@github.com/lpezet/antiope.git</connection>
-    	<developerConnection>scm:git:ssh://git@github.com/lpezet/antiope.git</developerConnection>
-		<url>https://github.com/lpezet/antiope</url>
-	 	<tag>HEAD</tag>
-  </scm>
+  <scm>
+		<connection>scm:git:git@github.com:lpezet/antiope.git</connection>
+		<url>scm:git:git@github.com:lpezet/antiope.git</url>
+		<developerConnection>scm:git:git@github.com:lpezet/antiope.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
 
 	<build>
@@ -218,11 +255,13 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5.1</version>
-					<!-- <configuration> <tagBase>https://svn.apache.org/repos/asf/camel/tags</tagBase> 
-						<useReleaseProfile>false</useReleaseProfile> <preparationGoals>clean install</preparationGoals> 
-						<goals>deploy</goals> <arguments>-Papache-release,enable-schemagen,sourcecheck,validate,hibernate-derby</arguments> 
-						<autoVersionSubmodules>true</autoVersionSubmodules> </configuration> -->
+					<version>2.5.3</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<useReleaseProfile>false</useReleaseProfile>
+						<releaseProfiles>release</releaseProfiles>
+						<goals>deploy</goals>
+					</configuration>
 				</plugin>
 
 				<plugin>
